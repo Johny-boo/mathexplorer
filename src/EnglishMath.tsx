@@ -35,6 +35,11 @@ type Props = {
     onMockTestPass: (level: EnglishLevel) => void
 }
 
+const safeJoin = (arr: unknown): string => {
+    if (!Array.isArray(arr)) return ''
+    return arr.filter(x => typeof x === 'string').join(' ')
+}
+
 export default function EnglishMath({ onBack, progress, onAnswer, onVocabTap, onMockTestPass }: Props) {
     const [view, setView] = useState<'menu' | 'playing' | 'summary' | 'flashcards'>('menu')
     const [currentLevel, setCurrentLevel] = useState<EnglishLevel>(1)
@@ -68,7 +73,6 @@ export default function EnglishMath({ onBack, progress, onAnswer, onVocabTap, on
 
     useEffect(() => {
         if (view !== 'playing' || phase !== 'answering') return
-
         if (isMockTest) {
             const id = setInterval(() => {
                 setMockTimer(t => {
@@ -82,7 +86,7 @@ export default function EnglishMath({ onBack, progress, onAnswer, onVocabTap, on
                 const left = Math.max(0, Math.ceil((deadlineRef.current - Date.now()) / 1000))
                 setTimeLeft(left)
                 if (left === 0) {
-                    clearInterval(id) // Dừng ngay lập tức
+                    clearInterval(id)
                     finishQuestion(null)
                 }
             }, 250)
@@ -91,15 +95,20 @@ export default function EnglishMath({ onBack, progress, onAnswer, onVocabTap, on
     }, [view, phase, qIndex, isMockTest])
 
     function startLevel(level: EnglishLevel, isMock = false) {
-        setCurrentLevel(level)
-        setIsMockTest(isMock)
-        const newSession = buildSession(level, ENGLISH_SESSION_SIZE)
-        setSession(newSession)
-        setQIndex(0)
-        setSessionCorrect(0)
-        initQuestionState(level)
-        if (isMock) setMockTimer(ENGLISH_TIME_BY_LEVEL[level] * ENGLISH_SESSION_SIZE)
-        setView('playing')
+        try {
+            setCurrentLevel(level)
+            setIsMockTest(isMock)
+            const newSession = buildSession(level, ENGLISH_SESSION_SIZE)
+            setSession(newSession)
+            setQIndex(0)
+            setSessionCorrect(0)
+            initQuestionState(level)
+            if (isMock) setMockTimer(ENGLISH_TIME_BY_LEVEL[level] * ENGLISH_SESSION_SIZE)
+            setView('playing')
+        } catch (err) {
+            console.error('[EnglishMath] Lỗi khởi tạo level:', err)
+            setView('menu')
+        }
     }
 
     function initQuestionState(level: EnglishLevel) {
@@ -134,18 +143,18 @@ export default function EnglishMath({ onBack, progress, onAnswer, onVocabTap, on
 
             if (isCorrect) setSessionCorrect(prev => prev + 1)
 
-            if (q.vocab) {
+            if (q.vocab && onAnswer) {
                 onAnswer({ level: currentLevel, topic: q.topic, correct: isCorrect, usedAudio, usedTranslate, timeSpent, timedOut: choice === null, vocabIds: q.vocab })
             }
         } catch (error) {
-            console.error("Lỗi xử lý câu trả lời:", error)
+            console.error('[EnglishMath] Lỗi xử lý câu trả lời:', error)
             setPhase('revealed')
         }
     }
 
     function handleNext() {
         if (qIndex + 1 >= session.length) {
-            if (isMockTest && sessionCorrect >= 8) onMockTestPass(currentLevel)
+            if (isMockTest && sessionCorrect >= 8 && onMockTestPass) onMockTestPass(currentLevel)
             setView('summary')
         } else {
             setQIndex(prev => prev + 1)
@@ -155,7 +164,7 @@ export default function EnglishMath({ onBack, progress, onAnswer, onVocabTap, on
 
     function handlePlayAudio() {
         if (isMockTest) return
-        speak(session[qIndex].audioText, currentLevel)
+        if (session[qIndex]) speak(session[qIndex].audioText, currentLevel)
         setUsedAudio(true)
     }
 
@@ -173,12 +182,13 @@ export default function EnglishMath({ onBack, progress, onAnswer, onVocabTap, on
             setLookupWord(vocab.id)
             if (!tappedWords.includes(vocab.id)) {
                 setTappedWords(prev => [...prev, vocab.id])
-                onVocabTap(vocab.id)
+                if (onVocabTap) onVocabTap(vocab.id)
             }
         }
     }
 
     const renderPromptWithLookup = (prompt: string) => {
+        if (!prompt) return null
         if (isMockTest) return <span>{ prompt } </span>
         return prompt.split(' ').map((word, idx) => {
             const cleanWord = word.replace(/[^a-zA-Z]/g, '').toLowerCase()
@@ -331,12 +341,28 @@ if (view === 'summary') {
 
 // ================= MÀN HÌNH CHƠI (PLAYING) =================
 const q = session[qIndex]
+
+if (!q) {
+    return (
+        <main className= "english-math" >
+        <div className="eng-container" style = {{ padding: '50px', textAlign: 'center' }
+}>
+    <p>Đang tải câu hỏi...</p>
+        < button className = "btn-secondary" onClick = {() => setView('menu')}> Về menu </button>
+            </div>
+            </main>
+        )
+    }
+
 const canShowTranslate = currentLevel < 5 || phase === 'revealed'
 const lookupVocab = lookupWord ? VOCABULARY_BANK.find(v => v.id === lookupWord) : null
 
-if (!q) return <main className="english-math" > <div className="eng-container" > Đang tải...</div></main >
+// Xác định nhãn phụ cho dạng Algebra
+const algebraSubLabel = q.topic === 'algebra'
+    ? (q.visual?.type === 'balance' ? '⚖️ Cân thăng bằng' : '🧩 Phương trình')
+    : null
 
-    return (
+return (
     <main className= "english-math" >
     <div className="math-top-bar" >
         <button className="math-back-button" onClick = {() => setView('menu')}>← Menu Tiếng Anh </button>
@@ -349,14 +375,24 @@ if (!q) return <main className="english-math" > <div className="eng-container" >
     </div>
 
     < div className = "eng-practice-container" >
-        <div className="eng-practice-header" >
+        <div className="eng-practice-header" style = {{ flexWrap: 'wrap', gap: '8px' }}>
             <span className="eng-badge" > { isMockTest? '📝 THI THỬ': `Level ${currentLevel}` } </span>
-                < span className = "eng-topic-badge" > { ENGLISH_TOPIC_BADGE[q.topic]} </span>
-                    </div>
+                < span className = "eng-topic-badge" > { ENGLISH_TOPIC_BADGE[q.topic] || q.topic } </span>
+{
+    algebraSubLabel && (
+        <span className="eng-topic-badge" style = {{
+        background: q.visual?.type === 'balance' ? '#e0f2fe' : '#fef3c7',
+            color: q.visual?.type === 'balance' ? '#0369a1' : '#92400e'
+    }
+}>
+{ algebraSubLabel }
+    </span>
+                    )}
+</div>
 
-                    < div className = "eng-question-card" >
-                        <div className="eng-prompt-row" >
-                            {!isMockTest && <button className="audio-btn big" onClick = { handlePlayAudio } disabled = {!isSpeechSupported()}>🔊 Audio </button>}
+    < div className = "eng-question-card" >
+        <div className="eng-prompt-row" >
+            {!isMockTest && <button className="audio-btn big" onClick = { handlePlayAudio } disabled = {!isSpeechSupported()}>🔊 Audio </button>}
 <h2 className="eng-prompt-text" > { renderPromptWithLookup(q.prompt) } </h2>
     </div>
 
@@ -372,24 +408,31 @@ if (!q) return <main className="english-math" > <div className="eng-container" >
                     )}
 
 {
-    q.visual?.type === 'clock' && (
+    q.visual && q.visual.type === 'clock' && (
         <div style={ { display: 'flex', justifyContent: 'center', margin: '20px 0' } }>
             <ClockFace hour={ q.visual.hour } minute = { q.visual.minute } />
                 </div>
                     )
 }
 {
-    q.visual?.type === 'emoji' && (
+    q.visual && q.visual.type === 'emoji' && (
         <div style={ { fontSize: '80px', textAlign: 'center', margin: '20px 0' } }> { q.visual.text } </div>
                     )
 }
 {
-    q.visual?.type === 'balance' && (
-        <BalanceScale leftWeight={ q.visual.leftWeight } rightWeight = { q.visual.rightWeight } itemEmoji = { q.visual.itemEmoji } />
+    q.visual && q.visual.type === 'balance' && (
+        <BalanceScale 
+                            leftWeight={ q.visual.leftWeight }
+    rightWeight = { q.visual.rightWeight }
+    itemEmoji = { q.visual.itemEmoji }
+    itemWeight = { q.visual.itemWeight }
+    numLeft = { q.visual.numLeft }
+    numRight = { q.visual.numRight }
+        />
                     )
 }
 {
-    q.visual?.type === 'equation' && (
+    q.visual && q.visual.type === 'equation' && (
         <VisualEquation lines={ q.visual.lines } />
                     )
 }
@@ -409,8 +452,7 @@ if (!q) return <main className="english-math" > <div className="eng-container" >
                     )}
 
 <div className="eng-options-grid" >
-{
-    q.options.map(opt => {
+    {(q.options || []).map(opt => {
         const isChosen = opt === selected
         const isRight = opt === q.answer
         let cls = 'eng-option'
@@ -420,8 +462,8 @@ if (!q) return <main className="english-math" > <div className="eng-container" >
         }
         return (
             <button key= { opt } className = { cls } onClick = {() => finishQuestion(opt)
-    } disabled = { phase === 'revealed'} > { opt } </button>
-                            )
+    } disabled = { phase === 'revealed'}> { opt } </button>
+    )
                         })}
 </div>
 
@@ -434,8 +476,8 @@ if (!q) return <main className="english-math" > <div className="eng-container" >
     < h3 > { selected === q.answer ? 'Chính xác!' : (selected === null ? 'Hết giờ!' : 'Chưa đúng!')}</h3>
         </div>
         < div className = "eng-explanation" >
-            <p><strong>EN: </strong> {q.explanation.join(' ')}</p >
-                <p><strong>VI: </strong> {q.explanationVi.join(' ')}</p >
+            <p><strong>EN: </strong> {safeJoin(q.explanation)}</p >
+                <p><strong>VI: </strong> {safeJoin(q.explanationVi)}</p >
                     </div>
                     < button className = "btn-next-question" onClick = { handleNext } > { qIndex + 1 >= ENGLISH_SESSION_SIZE ? 'Xem kết quả ➜' : 'Câu tiếp theo ➜'}</button>
                         </div>

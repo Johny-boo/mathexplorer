@@ -17,9 +17,7 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
 
     const maxNum = level === 1 ? 20 : 100
 
-    // ==========================================
-    // 1. NUMBER (Số & Đọc số) - CORE THINKING
-    // ==========================================
+    // 1. NUMBER
     if (topic === 'number') {
         const num = level === 1 ? randInt(1, 20) : randInt(10, 100)
         const words = numberToWords(num)
@@ -29,19 +27,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = `Số nào là "${words}"?`
             answer = String(num)
             options = numberOptions(num, [num + 10, num - 10, Number(String(num).split('').reverse().join(''))], 0, maxNum)
-
-            explanation = [
-                `Strategy: Break the word into parts.`,
-                `Notice the word "${words}". If it ends in "-teen", it means 10 + the first part.`,
-                `If it ends in "-ty", it is a multiple of ten.`,
-                `So, "${words}" translates to ${num}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Tách từ ra để phân tích.`,
-                `Nhận xét từ "${words}". Nếu kết thúc bằng "-teen", nghĩa là 10 + phần đầu.`,
-                `Nếu kết thúc bằng "-ty", đó là một số tròn chục.`,
-                `Vậy "${words}" tương ứng với số ${num}.`
-            ]
+            explanation = [`Strategy: Break the word into parts.`, `Notice the word "${words}".`, `So, "${words}" translates to ${num}.`]
+            explanationVi = [`Chiến lược: Tách từ ra để phân tích.`, `Nhận xét từ "${words}".`, `Vậy "${words}" tương ứng với số ${num}.`]
         } else {
             prompt = `Which word is ${num}?`
             audioText = `Which word is ${numberToWords(num)}?`
@@ -49,26 +36,13 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             answer = words
             const family = [numberToWords(num === maxNum ? num - 1 : num + 1), numberToWords(num - 1 >= 0 ? num - 1 : num + 2), numberToWords(num + 10 <= maxNum ? num + 10 : num - 10)].filter(Boolean)
             options = wordOptions(answer, [answer, ...family])
-
-            explanation = [
-                `Strategy: Look at the place value.`,
-                `The number ${num} has ${Math.floor(num / 10)} tens and ${num % 10} ones.`,
-                `Read the tens first, then the ones.`,
-                `Therefore, it is written as "${words}".`
-            ]
-            explanationVi = [
-                `Chiến lược: Nhìn vào giá trị hàng.`,
-                `Số ${num} có ${Math.floor(num / 10)} chục và ${num % 10} đơn vị.`,
-                `Đọc hàng chục trước, sau đó đọc hàng đơn vị.`,
-                `Do đó, nó được viết là "${words}".`
-            ]
+            explanation = [`Strategy: Look at the place value.`, `The number ${num} has ${Math.floor(num / 10)} tens and ${num % 10} ones.`, `Therefore, it is written as "${words}".`]
+            explanationVi = [`Chiến lược: Nhìn vào giá trị hàng.`, `Số ${num} có ${Math.floor(num / 10)} chục và ${num % 10} đơn vị.`, `Do đó, nó được viết là "${words}".`]
         }
         vocab.push('number')
     }
 
-    // ==========================================
-    // 2. ADDSUB (Cộng & Trừ) - CORE THINKING
-    // ==========================================
+    // 2. ADDSUB
     else if (topic === 'addsub') {
         if (level === 1) {
             const isAdd = Math.random() > 0.5
@@ -80,17 +54,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = isAdd ? `${a} cộng ${b} là ___` : `${big} trừ ${small} là ___`
             answer = String(ans)
             options = numberOptions(ans, [isAdd ? big - small : a + b, ans + 1, ans - 1], 0, 20)
-
-            explanation = [
-                `Strategy: Count on from the bigger number.`,
-                `Start at ${big} and ${isAdd ? 'count up' : 'count back'} ${small} steps.`,
-                `${big} ${isAdd ? '+' : '-'} ${small} = ${ans}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Đếm tiếp từ số lớn hơn.`,
-                `Bắt đầu từ ${big} và ${isAdd ? 'đếm tới' : 'đếm lùi'} ${small} bước.`,
-                `${big} ${isAdd ? '+' : '-'} ${small} = ${ans}.`
-            ]
+            explanation = [`Strategy: Count on from the bigger number.`, `Start at ${big} and ${isAdd ? 'count up' : 'count back'} ${small} steps.`, `${big} ${isAdd ? '+' : '-'} ${small} = ${ans}.`]
+            explanationVi = [`Chiến lược: Đếm tiếp từ số lớn hơn.`, `Bắt đầu từ ${big} và ${isAdd ? 'đếm tới' : 'đếm lùi'} ${small} bước.`, `${big} ${isAdd ? '+' : '-'} ${small} = ${ans}.`]
         } else {
             const isAdd = Math.random() > 0.5
             if (isAdd) {
@@ -102,21 +67,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 answer = String(ans)
                 const forgotCarry = (a % 10 + b % 10 >= 10) ? ans - 10 : ans - 1
                 options = numberOptions(ans, [forgotCarry, a - b, ans + 10], 0, 100)
-
-                explanation = [
-                    `Strategy: Break into tens and ones.`,
-                    `Tens: ${Math.floor(a / 10) * 10} + ${Math.floor(b / 10) * 10} = ${Math.floor(a / 10) * 10 + Math.floor(b / 10) * 10}.`,
-                    `Ones: ${a % 10} + ${b % 10} = ${a % 10 + b % 10}.`,
-                    `Don't forget to carry over if the ones add up to 10 or more!`,
-                    `Total: ${ans}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Tách thành hàng chục và hàng đơn vị.`,
-                    `Hàng chục: ${Math.floor(a / 10) * 10} + ${Math.floor(b / 10) * 10} = ${Math.floor(a / 10) * 10 + Math.floor(b / 10) * 10}.`,
-                    `Hàng đơn vị: ${a % 10} + ${b % 10} = ${a % 10 + b % 10}.`,
-                    `Đừng quên nhớ 1 nếu hàng đơn vị cộng lại từ 10 trở lên nhé!`,
-                    `Tổng cộng: ${ans}.`
-                ]
+                explanation = [`Strategy: Break into tens and ones.`, `Tens: ${Math.floor(a / 10) * 10} + ${Math.floor(b / 10) * 10} = ${Math.floor(a / 10) * 10 + Math.floor(b / 10) * 10}.`, `Ones: ${a % 10} + ${b % 10} = ${a % 10 + b % 10}.`, `Total: ${ans}.`]
+                explanationVi = [`Chiến lược: Tách thành hàng chục và hàng đơn vị.`, `Hàng chục: ${Math.floor(a / 10) * 10} + ${Math.floor(b / 10) * 10} = ${Math.floor(a / 10) * 10 + Math.floor(b / 10) * 10}.`, `Hàng đơn vị: ${a % 10} + ${b % 10} = ${a % 10 + b % 10}.`, `Tổng cộng: ${ans}.`]
             } else {
                 const a = randInt(45, 90), b = randInt(15, 40)
                 const big = Math.max(a, b), small = Math.min(a, b)
@@ -126,26 +78,13 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `${big} trừ ${small} là ___`
                 answer = String(ans)
                 options = numberOptions(ans, [big + small, ans + 10, ans - 1], 0, 100)
-
-                explanation = [
-                    `Strategy: Check if you need to borrow.`,
-                    `Can we subtract ${small % 10} from ${big % 10}? If not, we must borrow 1 ten.`,
-                    `Subtract the ones, then subtract the tens.`,
-                    `The result is ${ans}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Kiểm tra xem có cần mượn không.`,
-                    `Có trừ được ${small % 10} cho ${big % 10} không? Nếu không, ta phải mượn 1 chục.`,
-                    `Trừ hàng đơn vị trước, sau đó trừ hàng chục.`,
-                    `Kết quả là ${ans}.`
-                ]
+                explanation = [`Strategy: Check if you need to borrow.`, `Subtract the ones, then subtract the tens.`, `The result is ${ans}.`]
+                explanationVi = [`Chiến lược: Kiểm tra xem có cần mượn không.`, `Trừ hàng đơn vị trước, sau đó trừ hàng chục.`, `Kết quả là ${ans}.`]
             }
         }
     }
 
-    // ==========================================
-    // 3. MULDIV (Nhân & Chia) - CORE THINKING
-    // ==========================================
+    // 3. MULDIV
     else if (topic === 'muldiv') {
         if (level === 1) {
             const a = randInt(2, 3), b = randInt(2, 4)
@@ -155,17 +94,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = `Có ${a} nhóm, mỗi nhóm ${b} cái. Hỏi có tất cả bao nhiêu?`
             answer = String(ans)
             options = numberOptions(ans, [a + b, ans + 1], 0, 12)
-
-            explanation = [
-                `Strategy: Multiplication is repeated addition.`,
-                `We have ${a} groups, and each group has ${b}.`,
-                `So, we can add: ${Array(a).fill(b).join(' + ')} = ${ans}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Phép nhân là phép cộng lặp lại.`,
-                `Chúng ta có ${a} nhóm, mỗi nhóm có ${b} cái.`,
-                `Vậy ta có thể cộng: ${Array(a).fill(b).join(' + ')} = ${ans}.`
-            ]
+            explanation = [`Strategy: Multiplication is repeated addition.`, `We have ${a} groups, and each group has ${b}.`, `So, we can add: ${Array(a).fill(b).join(' + ')} = ${ans}.`]
+            explanationVi = [`Chiến lược: Phép nhân là phép cộng lặp lại.`, `Chúng ta có ${a} nhóm, mỗi nhóm có ${b} cái.`, `Vậy ta có thể cộng: ${Array(a).fill(b).join(' + ')} = ${ans}.`]
         } else {
             const type = Math.random()
             if (type < 0.4) {
@@ -176,18 +106,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `${a} nhân ${b} bằng mấy?`
                 answer = String(ans)
                 options = numberOptions(ans, [a + b, ans + a, ans - b], 0, 100)
-                explanation = [
-                    `Strategy: Think of your times tables.`,
-                    `If you don't remember ${a} × ${b}, try skip counting by ${a}s.`,
-                    `${a}, ${a * 2}, ${a * 3}, ... until you have counted ${b} times.`,
-                    `The answer is ${ans}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Nghĩ đến bảng cửu chương.`,
-                    `Nếu chưa nhớ ${a} × ${b}, hãy thử đếm cách quãng ${a} đơn vị.`,
-                    `${a}, ${a * 2}, ${a * 3}, ... cho đến khi đếm đủ ${b} lần.`,
-                    `Đáp án là ${ans}.`
-                ]
+                explanation = [`Strategy: Think of your times tables.`, `If you don't remember ${a} × ${b}, try skip counting by ${a}s.`, `The answer is ${ans}.`]
+                explanationVi = [`Chiến lược: Nghĩ đến bảng cửu chương.`, `Nếu chưa nhớ ${a} × ${b}, hãy thử đếm cách quãng ${a} đơn vị.`, `Đáp án là ${ans}.`]
             } else if (type < 0.7) {
                 const ans = randInt(2, 10), b = randInt(2, 5)
                 const a = ans * b
@@ -196,18 +116,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `Một nửa của ${a} là bao nhiêu?`
                 answer = String(ans)
                 options = numberOptions(ans, [a, ans + 1, ans - 1], 0, 50)
-                explanation = [
-                    `Strategy: "Half" means dividing by 2.`,
-                    `We need to share ${a} equally into 2 groups.`,
-                    `Think: ${ans} + ${ans} = ${a}.`,
-                    `So, half of ${a} is ${ans}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: "Một nửa" nghĩa là chia cho 2.`,
-                    `Chúng ta cần chia đều ${a} thành 2 nhóm.`,
-                    `Suy luận: ${ans} + ${ans} = ${a}.`,
-                    `Vậy một nửa của ${a} là ${ans}.`
-                ]
+                explanation = [`Strategy: "Half" means dividing by 2.`, `We need to share ${a} equally into 2 groups.`, `So, half of ${a} is ${ans}.`]
+                explanationVi = [`Chiến lược: "Một nửa" nghĩa là chia cho 2.`, `Chúng ta cần chia đều ${a} thành 2 nhóm.`, `Vậy một nửa của ${a} là ${ans}.`]
             } else {
                 const a = randInt(5, 15)
                 const ans = a * 2
@@ -216,23 +126,13 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `Gấp đôi ${a} là ___`
                 answer = String(ans)
                 options = numberOptions(ans, [a + 2, ans - 2, ans + 10], 0, 50)
-                explanation = [
-                    `Strategy: "Double" means adding a number to itself.`,
-                    `${a} doubled is the same as ${a} + ${a}.`,
-                    `So, ${a} + ${a} = ${ans}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: "Gấp đôi" nghĩa là cộng một số với chính nó.`,
-                    `Gấp đôi ${a} cũng giống như ${a} + ${a}.`,
-                    `Vậy, ${a} + ${a} = ${ans}.`
-                ]
+                explanation = [`Strategy: "Double" means adding a number to itself.`, `${a} doubled is the same as ${a} + ${a}.`, `So, ${a} + ${a} = ${ans}.`]
+                explanationVi = [`Chiến lược: "Gấp đôi" nghĩa là cộng một số với chính nó.`, `Gấp đôi ${a} cũng giống như ${a} + ${a}.`, `Vậy, ${a} + ${a} = ${ans}.`]
             }
         }
     }
 
-    // ==========================================
-    // 4. WORD PROBLEMS (Lời văn) - CORE THINKING
-    // ==========================================
+    // 4. WORD
     else if (topic === 'word') {
         const p = pick(PEOPLE)
         const item = pick(ITEMS)
@@ -244,17 +144,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = `${p.vi} có ${a} ${item.viNoun}. ${p.gender === 'm' ? 'Cậu ấy' : 'Cô ấy'} được thêm ${b} cái. Hỏi bây giờ có bao nhiêu?`
             answer = String(a + b)
             options = numberOptions(answer, [a - b, answer + 1], 0, 20)
-
-            explanation = [
-                `Strategy: Look for keywords.`,
-                `The word "gets ... more" means the total is increasing.`,
-                `So, we use addition: ${a} + ${b} = ${a + b}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Tìm từ khóa.`,
-                `Từ "gets ... more" (được thêm) nghĩa là tổng số tăng lên.`,
-                `Vậy ta dùng phép cộng: ${a} + ${b} = ${a + b}.`
-            ]
+            explanation = [`Strategy: Look for keywords.`, `The word "gets ... more" means the total is increasing.`, `So, we use addition: ${a} + ${b} = ${a + b}.`]
+            explanationVi = [`Chiến lược: Tìm từ khóa.`, `Từ "gets ... more" (được thêm) nghĩa là tổng số tăng lên.`, `Vậy ta dùng phép cộng: ${a} + ${b} = ${a + b}.`]
             vocab.push(item.id, 'plus', 'more')
         } else {
             const a = randInt(20, 60), b = randInt(5, 15)
@@ -265,42 +156,22 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `${p.vi} có ${a} ${item.viNoun}. ${p.gender === 'm' ? 'Cậu ấy' : 'Cô ấy'} có ít hơn ${b} cái. Hỏi ${p.gender === 'm' ? 'cậu ấy' : 'cô ấy'} có bao nhiêu?`
                 answer = String(a - b)
                 options = numberOptions(answer, [a + b, answer + 10], 0, 100)
-
-                explanation = [
-                    `Strategy: Look for keywords.`,
-                    `The word "fewer" means a smaller amount.`,
-                    `So, we subtract: ${a} - ${b} = ${a - b}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Tìm từ khóa.`,
-                    `Từ "fewer" (ít hơn) nghĩa là số lượng nhỏ hơn.`,
-                    `Vậy ta dùng phép trừ: ${a} - ${b} = ${a - b}.`
-                ]
+                explanation = [`Strategy: Look for keywords.`, `The word "fewer" means a smaller amount.`, `So, we subtract: ${a} - ${b} = ${a - b}.`]
+                explanationVi = [`Chiến lược: Tìm từ khóa.`, `Từ "fewer" (ít hơn) nghĩa là số lượng nhỏ hơn.`, `Vậy ta dùng phép trừ: ${a} - ${b} = ${a - b}.`]
             } else {
                 prompt = `${p.en} has ${noun(a, item)}. ${pr.subj} gets ${b} more. How many does ${pr.subj.toLowerCase()} have now?`
                 audioText = `${p.en} has ${numberToWords(a)} ${item.pl}. ${pr.subj} gets ${numberToWords(b)} more. How many does ${pr.subj.toLowerCase()} have now?`
                 promptVi = `${p.vi} có ${a} ${item.viNoun}. ${p.gender === 'm' ? 'Cậu ấy' : 'Cô ấy'} được thêm ${b} cái. Hỏi bây giờ có bao nhiêu?`
                 answer = String(a + b)
                 options = numberOptions(answer, [a - b, answer + 10], 0, 100)
-
-                explanation = [
-                    `Strategy: Look for keywords.`,
-                    `The word "more" means we add to the original amount.`,
-                    `So, ${a} + ${b} = ${a + b}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Tìm từ khóa.`,
-                    `Từ "more" (thêm) nghĩa là ta cộng thêm vào số ban đầu.`,
-                    `Vậy, ${a} + ${b} = ${a + b}.`
-                ]
+                explanation = [`Strategy: Look for keywords.`, `The word "more" means we add to the original amount.`, `So, ${a} + ${b} = ${a + b}.`]
+                explanationVi = [`Chiến lược: Tìm từ khóa.`, `Từ "more" (thêm) nghĩa là ta cộng thêm vào số ban đầu.`, `Vậy, ${a} + ${b} = ${a + b}.`]
             }
             vocab.push(item.id, isFewer ? 'left' : 'more')
         }
     }
 
-    // ==========================================
-    // 5. PATTERN (Quy luật) - CORE THINKING
-    // ==========================================
+    // 5. PATTERN
     else if (topic === 'pattern') {
         const isL1 = level === 1
         const start = randInt(1, isL1 ? 10 : 20)
@@ -312,19 +183,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = `${s1}, ${s2}, ___, ${s4}`
             answer = String(s3)
             options = numberOptions(s3, [s3 + step, s3 - step], 0, 100)
-
-            explanation = [
-                `Strategy: Find the "step size" (the difference between numbers).`,
-                `Look at the first two numbers: ${s2} - ${s1} = ${step}.`,
-                `Check if the rule holds: ${s4} - ${s3} = ${step}. Yes!`,
-                `So, the missing number is ${s2} + ${step} = ${s3}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Tìm "bước nhảy" (khoảng cách giữa các số).`,
-                `Nhìn vào 2 số đầu: ${s2} - ${s1} = ${step}.`,
-                `Kiểm tra xem quy luật có đúng không: ${s4} - ${s3} = ${step}. Đúng vậy!`,
-                `Vậy số còn thiếu là ${s2} + ${step} = ${s3}.`
-            ]
+            explanation = [`Strategy: Find the "step size".`, `Look at the first two numbers: ${s2} - ${s1} = ${step}.`, `So, the missing number is ${s2} + ${step} = ${s3}.`]
+            explanationVi = [`Chiến lược: Tìm "bước nhảy".`, `Nhìn vào 2 số đầu: ${s2} - ${s1} = ${step}.`, `Vậy số còn thiếu là ${s2} + ${step} = ${s3}.`]
         } else {
             const s1 = start, s2 = start + step, s3 = start + step * 2, s4 = start + step * 3
             prompt = `${s1}, ${s2}, ${s3}, ___`
@@ -332,26 +192,13 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = `${s1}, ${s2}, ${s3}, ___`
             answer = String(s4)
             options = numberOptions(s4, [s4 + step, s4 - 1, s4 + 10], 0, maxNum)
-
-            explanation = [
-                `Strategy: Observe the change.`,
-                `How much do we add to get from ${s1} to ${s2}? It's ${s2} - ${s1} = ${step}.`,
-                `Let's check the next pair: ${s3} - ${s2} = ${step}. The rule is "add ${step}".`,
-                `To find the next number, add ${step} to ${s3}: ${s3} + ${step} = ${s4}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Quan sát sự thay đổi.`,
-                `Cần thêm bao nhiêu để từ ${s1} lên ${s2}? Đó là ${s2} - ${s1} = ${step}.`,
-                `Thử kiểm tra cặp tiếp theo: ${s3} - ${s2} = ${step}. Quy luật là "cộng ${step}".`,
-                `Để tìm số tiếp theo, cộng ${step} vào ${s3}: ${s3} + ${step} = ${s4}.`
-            ]
+            explanation = [`Strategy: Observe the change.`, `How much do we add to get from ${s1} to ${s2}? It's ${step}.`, `To find the next number, add ${step} to ${s3}: ${s3} + ${step} = ${s4}.`]
+            explanationVi = [`Chiến lược: Quan sát sự thay đổi.`, `Cần thêm bao nhiêu để từ ${s1} lên ${s2}? Đó là ${step}.`, `Để tìm số tiếp theo, cộng ${step} vào ${s3}: ${s3} + ${step} = ${s4}.`]
         }
         vocab.push('next', 'pattern')
     }
 
-    // ==========================================
-    // 6. GEOMETRY (Hình học) - CORE THINKING
-    // ==========================================
+    // 6. GEOMETRY
     else if (topic === 'geometry') {
         const shapes = [
             { en: 'triangle', vi: 'tam giác', sides: 3, emoji: '🔺' },
@@ -366,42 +213,22 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = `Hình ${s.vi} có bao nhiêu cạnh?`
             answer = String(s.sides)
             options = numberOptions(s.sides, [s.sides + 1, s.sides - 1], 3, 8)
-
-            explanation = [
-                `Strategy: Sides are the straight lines that make up the shape.`,
-                `Think about the name: "Tri" means 3, "Penta" means 5, "Hexa" means 6.`,
-                `A ${s.en} has exactly ${s.sides} sides.`
-            ]
-            explanationVi = [
-                `Chiến lược: Cạnh là các đường thẳng tạo nên hình.`,
-                `Nghĩ về tên gọi: "Tri" nghĩa là 3, "Penta" là 5, "Hexa" là 6.`,
-                `Hình ${s.vi} có chính xác ${s.sides} cạnh.`
-            ]
+            explanation = [`Strategy: Sides are the straight lines that make up the shape.`, `Think about the name.`, `A ${s.en} has exactly ${s.sides} sides.`]
+            explanationVi = [`Chiến lược: Cạnh là các đường thẳng tạo nên hình.`, `Nghĩ về tên gọi.`, `Hình ${s.vi} có chính xác ${s.sides} cạnh.`]
         } else {
             prompt = `Which shape has ${s.sides} sides?`
             audioText = `Which shape has ${numberToWords(s.sides)} sides?`
             promptVi = `Hình nào có ${s.sides} cạnh?`
             answer = s.en
             options = wordOptions(answer, shapes.map(x => x.en))
-
-            explanation = [
-                `Strategy: Match the number of sides to the shape's name.`,
-                `Look for the shape with ${s.sides} straight edges.`,
-                `The ${s.en} has ${s.sides} sides.`
-            ]
-            explanationVi = [
-                `Chiến lược: Ghép số cạnh với tên hình.`,
-                `Tìm hình có ${s.sides} cạnh thẳng.`,
-                `Hình ${s.vi} có ${s.sides} cạnh.`
-            ]
+            explanation = [`Strategy: Match the number of sides to the shape's name.`, `Look for the shape with ${s.sides} straight edges.`, `The ${s.en} has ${s.sides} sides.`]
+            explanationVi = [`Chiến lược: Ghép số cạnh với tên hình.`, `Tìm hình có ${s.sides} cạnh thẳng.`, `Hình ${s.vi} có ${s.sides} cạnh.`]
         }
         visual = { type: 'emoji', text: s.emoji }
         vocab.push('side', 'shape', s.en)
     }
 
-    // ==========================================
-    // 7. MEASURE (Đo lường & Thời gian) - CORE THINKING
-    // ==========================================
+    // 7. MEASURE
     else if (topic === 'measure') {
         if (level === 1) {
             const pairs = [
@@ -416,32 +243,16 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `Cái nào dài hơn, ${p.viLong} hay ${p.viShort}?`
                 answer = p.long
                 options = wordOptions(answer, [p.long, p.short, 'book', 'pen'])
-                explanation = [
-                    `Strategy: Compare their real-life sizes.`,
-                    `Think about what you see in the real world.`,
-                    `A ${p.long} is much bigger and longer than a ${p.short}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: So sánh kích thước thực tế.`,
-                    `Hãy nghĩ về những gì con thấy ngoài đời thực.`,
-                    `${p.viLong} lớn và dài hơn nhiều so với ${p.viShort}.`
-                ]
+                explanation = [`Strategy: Compare their real-life sizes.`, `Think about what you see in the real world.`, `A ${p.long} is much bigger and longer than a ${p.short}.`]
+                explanationVi = [`Chiến lược: So sánh kích thước thực tế.`, `Hãy nghĩ về những gì con thấy ngoài đời thực.`, `${p.viLong} lớn và dài hơn nhiều so với ${p.viShort}.`]
             } else {
                 prompt = `Which is heavier, an ${p.heavy} or an ${p.light}?`
                 audioText = `Which is heavier, an ${p.heavy} or an ${p.light}?`
                 promptVi = `Cái nào nặng hơn, ${p.viHeavy} hay ${p.viLight}?`
                 answer = p.heavy
                 options = wordOptions(answer, [p.heavy, p.light, 'cat', 'dog'])
-                explanation = [
-                    `Strategy: Imagine lifting them.`,
-                    `Think about their real-life weight.`,
-                    `An ${p.heavy} is much heavier than an ${p.light}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Tưởng tượng việc nhấc chúng lên.`,
-                    `Hãy nghĩ về trọng lượng thực tế của chúng.`,
-                    `${p.viHeavy} nặng hơn nhiều so với ${p.viLight}.`
-                ]
+                explanation = [`Strategy: Imagine lifting them.`, `Think about their real-life weight.`, `An ${p.heavy} is much heavier than an ${p.light}.`]
+                explanationVi = [`Chiến lược: Tưởng tượng việc nhấc chúng lên.`, `Hãy nghĩ về trọng lượng thực tế của chúng.`, `${p.viHeavy} nặng hơn nhiều so với ${p.viLight}.`]
             }
             vocab.push('long', 'short')
         } else {
@@ -452,27 +263,14 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = `Bây giờ là mấy giờ?`
             answer = `${hour}:${minute === 0 ? '00' : '30'}`
             options = timeOptions(hour, minute)
-
-            explanation = [
-                `Strategy: Read the hands on the clock.`,
-                `The short hand tells the hour. It is pointing at ${hour}.`,
-                `The long hand tells the minutes. It is pointing at ${minute === 0 ? '12 (which means 00)' : '6 (which means 30)'}.`,
-                `So, the time is ${hour}:${minute === 0 ? '00' : '30'}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Đọc kim trên đồng hồ.`,
-                `Kim ngắn chỉ giờ. Nó đang chỉ vào số ${hour}.`,
-                `Kim dài chỉ phút. Nó đang chỉ vào số ${minute === 0 ? '12 (nghĩa là 00 phút)' : '6 (nghĩa là 30 phút)'}.`,
-                `Vậy, thời gian là ${hour}:${minute === 0 ? '00' : '30'}.`
-            ]
+            explanation = [`Strategy: Read the hands on the clock.`, `The short hand tells the hour: ${hour}.`, `The long hand tells the minutes: ${minute === 0 ? '00' : '30'}.`, `So, the time is ${answer}.`]
+            explanationVi = [`Chiến lược: Đọc kim trên đồng hồ.`, `Kim ngắn chỉ giờ: ${hour}.`, `Kim dài chỉ phút: ${minute === 0 ? '00' : '30'}.`, `Vậy, thời gian là ${answer}.`]
             visual = { type: 'clock', hour, minute }
             vocab.push('clock', 'time')
         }
     }
 
-    // ==========================================
-    // 8. LOGIC (Logic & Dữ liệu) - CORE THINKING
-    // ==========================================
+    // 8. LOGIC
     else if (topic === 'logic') {
         if (level === 1) {
             const isOdd = Math.random() > 0.5
@@ -486,19 +284,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `Số nào là số khác biệt? ${arr.join(', ')}`
                 answer = String(odd)
                 options = arr.map(String)
-
-                explanation = [
-                    `Strategy: Look for the rule that most numbers follow.`,
-                    `Notice that ${e1}, ${e2}, and ${e3} can all be divided by 2 equally.`,
-                    `They are EVEN numbers. ${odd} cannot be divided by 2. It is ODD.`,
-                    `So, ${odd} is the odd one out!`
-                ]
-                explanationVi = [
-                    `Chiến lược: Tìm quy luật mà hầu hết các số đều tuân theo.`,
-                    `Nhận xét rằng ${e1}, ${e2}, và ${e3} đều có thể chia hết cho 2.`,
-                    `Chúng là số CHẴN. ${odd} không thể chia hết cho 2. Nó là số LẺ.`,
-                    `Vậy, ${odd} là số khác biệt!`
-                ]
+                explanation = [`Strategy: Look for the rule that most numbers follow.`, `Notice that ${e1}, ${e2}, and ${e3} can all be divided by 2.`, `They are EVEN. ${odd} is ODD.`, `So, ${odd} is the odd one out!`]
+                explanationVi = [`Chiến lược: Tìm quy luật chung.`, `Nhận xét rằng ${e1}, ${e2}, và ${e3} đều chia hết cho 2.`, `Chúng là số CHẴN. ${odd} là số LẺ.`, `Vậy, ${odd} là số khác biệt!`]
             } else {
                 const items = ['apple', 'banana', 'orange', 'pen']
                 prompt = `Which is the odd one out? ${items.join(', ')}`
@@ -506,18 +293,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `Cái nào khác biệt? ${items.join(', ')}`
                 answer = 'pen'
                 options = items
-                explanation = [
-                    `Strategy: Group the items by category.`,
-                    `Apple, banana, and orange are all fruits.`,
-                    `A pen is used for writing, not eating!`,
-                    `So, the pen is the odd one out.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Phân loại các đồ vật.`,
-                    `Táo, chuối và cam đều là trái cây.`,
-                    `Bút được dùng để viết, không phải để ăn!`,
-                    `Vậy, cái bút là khác biệt.`
-                ]
+                explanation = [`Strategy: Group the items by category.`, `Apple, banana, and orange are fruits.`, `A pen is used for writing.`, `So, the pen is the odd one out.`]
+                explanationVi = [`Chiến lược: Phân loại các đồ vật.`, `Táo, chuối và cam đều là trái cây.`, `Bút dùng để viết.`, `Vậy, cái bút là khác biệt.`]
             }
             vocab.push('odd')
         } else {
@@ -529,46 +306,22 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
                 promptVi = `${names[0].vi} cao hơn ${names[1].vi}. ${names[1].vi} cao hơn ${names[2].vi}. Ai cao nhất?`
                 answer = names[0].en
                 options = names.map(n => n.en)
-
-                explanation = [
-                    `Strategy: Draw a mental line of their heights.`,
-                    `If ${names[0].en} > ${names[1].en}, and ${names[1].en} > ${names[2].en},`,
-                    `then ${names[0].en} must be the tallest of all!`,
-                    `Imagine them in order: ${names[0].en} -> ${names[1].en} -> ${names[2].en}.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Vẽ một đường thẳng tưởng tượng về chiều cao của họ.`,
-                    `Nếu ${names[0].vi} > ${names[1].vi}, và ${names[1].vi} > ${names[2].vi},`,
-                    `thì ${names[0].vi} phải là người cao nhất!`,
-                    `Hãy tưởng tượng thứ tự: ${names[0].vi} -> ${names[1].vi} -> ${names[2].vi}.`
-                ]
+                explanation = [`Strategy: Draw a mental line of their heights.`, `If ${names[0].en} > ${names[1].en}, and ${names[1].en} > ${names[2].en},`, `then ${names[0].en} must be the tallest!`]
+                explanationVi = [`Chiến lược: Vẽ một đường tưởng tượng về chiều cao.`, `Nếu ${names[0].vi} > ${names[1].vi}, và ${names[1].vi} > ${names[2].vi},`, `thì ${names[0].vi} phải là người cao nhất!`]
             } else {
                 prompt = `${names[0].en} is older than ${names[1].en}. ${names[1].en} is older than ${names[2].en}. Who is the youngest?`
                 audioText = `${names[0].en} is older than ${names[1].en}. ${names[1].en} is older than ${names[2].en}. Who is the youngest?`
                 promptVi = `${names[0].vi} lớn tuổi hơn ${names[1].vi}. ${names[1].vi} lớn tuổi hơn ${names[2].vi}. Ai nhỏ tuổi nhất?`
                 answer = names[2].en
                 options = names.map(n => n.en)
-
-                explanation = [
-                    `Strategy: Find the end of the chain.`,
-                    `The oldest is ${names[0].en}.`,
-                    `The youngest is the one at the very bottom of the age order.`,
-                    `So, ${names[2].en} is the youngest.`
-                ]
-                explanationVi = [
-                    `Chiến lược: Tìm điểm cuối của chuỗi.`,
-                    `Người lớn tuổi nhất là ${names[0].vi}.`,
-                    `Người nhỏ tuổi nhất là người đứng cuối trong thứ tự tuổi tác.`,
-                    `Vậy, ${names[2].vi} là người nhỏ tuổi nhất.`
-                ]
+                explanation = [`Strategy: Find the end of the chain.`, `The oldest is ${names[0].en}.`, `The youngest is the one at the very bottom: ${names[2].en}.`]
+                explanationVi = [`Chiến lược: Tìm điểm cuối của chuỗi.`, `Người lớn tuổi nhất là ${names[0].vi}.`, `Người nhỏ tuổi nhất là người đứng cuối: ${names[2].vi}.`]
             }
             vocab.push('taller', 'older', 'youngest')
         }
     }
 
-    // ==========================================
-    // 9. DETECTIVE (Thám tử số) - CORE THINKING
-    // ==========================================
+    // 9. DETECTIVE
     else if (topic === 'detective') {
         visual = { type: 'emoji', text: '🕵️' }
         if (level === 1) {
@@ -585,18 +338,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             answer = String(target)
             options = shuffle([...distractors.map(String), answer])
 
-            explanation = [
-                `Strategy: Process of elimination using the clue.`,
-                `The clue says the number must be ${isEven ? 'even' : 'odd'}.`,
-                `Look at the options. Only ${target} is an ${isEven ? 'even' : 'odd'} number.`,
-                `Therefore, ${target} is the answer.`
-            ]
-            explanationVi = [
-                `Chiến lược: Dùng manh mối để loại trừ.`,
-                `Manh mối nói rằng số đó phải là số ${isEven ? 'chẵn' : 'lẻ'}.`,
-                `Nhìn vào các đáp án. Chỉ có ${target} là số ${isEven ? 'chẵn' : 'lẻ'}.`,
-                `Do đó, ${target} là đáp án.`
-            ]
+            explanation = [`Strategy: Process of elimination using the clue.`, `The clue says the number must be ${isEven ? 'even' : 'odd'}.`, `Only ${target} is an ${isEven ? 'even' : 'odd'} number in the options.`]
+            explanationVi = [`Chiến lược: Dùng manh mối để loại trừ.`, `Manh mối nói số đó phải là số ${isEven ? 'chẵn' : 'lẻ'}.`, `Chỉ có ${target} là số ${isEven ? 'chẵn' : 'lẻ'} trong các đáp án.`]
         } else {
             const target = randInt(12, 89)
             const tens = Math.floor(target / 10)
@@ -608,26 +351,13 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             promptVi = `Tôi là số có 2 chữ số. Tổng các chữ số của tôi là ${digitSum}. Tôi nằm giữa ${target - 4} và ${target + 4}. Tôi là số mấy?`
             answer = String(target)
             options = numberOptions(target, [target + 10, target - 10, target + 1], 10, 100)
-
-            explanation = [
-                `Strategy: Use the second clue first to narrow down the list.`,
-                `The number is between ${target - 4} and ${target + 4}. Let's check the middle.`,
-                `Now, test the first clue: do the digits of ${target} add up to ${digitSum}?`,
-                `Yes! ${tens} + ${ones} = ${digitSum}. So, ${target} is the number.`
-            ]
-            explanationVi = [
-                `Chiến lược: Dùng manh mối thứ 2 trước để thu hẹp danh sách.`,
-                `Số đó nằm giữa ${target - 4} và ${target + 4}. Hãy kiểm tra khoảng giữa.`,
-                `Bây giờ, thử manh mối đầu tiên: các chữ số của ${target} cộng lại có bằng ${digitSum} không?`,
-                `Đúng vậy! ${tens} + ${ones} = ${digitSum}. Vậy, số đó là ${target}.`
-            ]
+            explanation = [`Strategy: Use the second clue first.`, `The number is between ${target - 4} and ${target + 4}.`, `Test the first clue: ${tens} + ${ones} = ${digitSum}. Yes!`]
+            explanationVi = [`Chiến lược: Dùng manh mối thứ 2 trước.`, `Số đó nằm giữa ${target - 4} và ${target + 4}.`, `Thử manh mối 1: ${tens} + ${ones} = ${digitSum}. Đúng!`]
         }
         vocab.push('odd', 'even')
     }
 
-    // ==========================================
-    // 10. ELIMINATION (Loại trừ) - CORE THINKING
-    // ==========================================
+    // 10. ELIMINATION
     else if (topic === 'elimination') {
         visual = { type: 'emoji', text: '🎯' }
         const getItemDisplay = (item: Item) => item.emoji || item.sg
@@ -648,16 +378,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             answer = p1.en
             options = shuffle([p1.en, p2.en, 'Both', 'Neither'])
 
-            explanation = [
-                `Strategy: Read carefully to match the person to the item.`,
-                `The text says "${p1.en} has ${display1}".`,
-                `So, ${p1.en} is the one who has it.`
-            ]
-            explanationVi = [
-                `Chiến lược: Đọc kỹ để ghép người với đồ vật.`,
-                `Đoạn văn nói rằng "${p1.vi} có ${item1.viNoun}".`,
-                `Vậy, ${p1.vi} là người có nó.`
-            ]
+            explanation = [`Strategy: Match the person to the item.`, `The text says "${p1.en} has ${display1}".`, `So, ${p1.en} is the answer.`]
+            explanationVi = [`Chiến lược: Ghép người với đồ vật.`, `Đoạn văn nói "${p1.vi} có ${item1.viNoun}".`, `Vậy, ${p1.vi} là đáp án.`]
         } else {
             const shuffledPeople = shuffle([...PEOPLE]).slice(0, 4)
             const p1 = shuffledPeople[0], p2 = shuffledPeople[1], p3 = shuffledPeople[2], extraPerson = shuffledPeople[3]
@@ -675,27 +397,22 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             answer = extraPerson.en
             options = shuffle([p1.en, p2.en, p3.en, extraPerson.en])
 
-            explanation = [
-                `Strategy: Use the process of elimination.`,
-                `We know ${p1.en} has ${displayA}, and ${p3.en} has ${displayC}.`,
-                `The text also says ${p2.en} does NOT have ${displayB}.`,
-                `Since ${p1.en} and ${p3.en} are already matched, and ${p2.en} doesn't have it, the only person left is ${extraPerson.en}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Sử dụng phép loại trừ.`,
-                `Chúng ta biết ${p1.vi} có ${itemA.viNoun}, và ${p3.vi} có ${itemC.viNoun}.`,
-                `Đoạn văn cũng nói ${p2.vi} KHÔNG có ${itemB.viNoun}.`,
-                `Vì ${p1.vi} và ${p3.vi} đã có đồ vật của họ, và ${p2.vi} không có, nên người duy nhất còn lại là ${extraPerson.vi}.`
-            ]
+            explanation = [`Strategy: Process of elimination.`, `${p1.en} has ${displayA}, and ${p3.en} has ${displayC}.`, `${p2.en} does NOT have ${displayB}.`, `So, ${extraPerson.en} must have it.`]
+            explanationVi = [`Chiến lược: Loại trừ.`, `${p1.vi} có ${itemA.viNoun}, và ${p3.vi} có ${itemC.viNoun}.`, `${p2.vi} KHÔNG có ${itemB.viNoun}.`, `Vậy, ${extraPerson.vi} phải là người có nó.`]
         }
         vocab.push('logic')
     }
 
-    // ==========================================
-    // 11. ALGEBRA (Đại số hình ảnh) - CORE THINKING
-    // ==========================================
+    // 11. ALGEBRA (CẢI TIẾN: Phân bổ đều theo Level)
     else if (topic === 'algebra') {
-        if (Math.random() > 0.5) {
+        // Cải tiến: Tỉ lệ dạng bài tăng dần theo Level
+        // L1-L2: 100% Balance (dễ hiểu trực quan)
+        // L3-L4: 70% Balance + 30% Equation
+        // L5: 50% Balance + 50% Equation (thử thách)
+        const balanceChance = level <= 2 ? 1.0 : level <= 4 ? 0.7 : 0.5
+        const isBalance = Math.random() < balanceChance
+
+        if (isBalance) {
             const itemWeight = pick([2, 5, 10])
             const numLeft = randInt(3, 5)
             const numRight = randInt(1, numLeft - 1)
@@ -709,40 +426,17 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             answer = String(mystery)
             options = numberOptions(mystery, [totalLeft + totalRight, mystery + itemWeight, mystery - 1], 1, 100)
 
-            visual = { type: 'balance', leftWeight: totalLeft, rightWeight: totalRight, mysteryWeight: mystery, itemEmoji: '📦' }
+            visual = { type: 'balance', leftWeight: totalLeft, rightWeight: totalRight, mysteryWeight: mystery, itemEmoji: '📦', itemWeight, numLeft, numRight }
 
-            explanation = [
-                `Strategy: A balanced scale means both sides weigh the same.`,
-                `Total weight on the left is ${totalLeft} kg.`,
-                `The right side has ${totalRight} kg plus the mystery box.`,
-                `To find the box, subtract the known weight: ${totalLeft} - ${totalRight} = ${mystery} kg.`
-            ]
-            explanationVi = [
-                `Chiến lược: Cân thăng bằng nghĩa là hai bên có khối lượng bằng nhau.`,
-                `Tổng khối lượng bên trái là ${totalLeft} kg.`,
-                `Bên phải có ${totalRight} kg cộng với hộp bí ẩn.`,
-                `Để tìm hộp, ta trừ đi khối lượng đã biết: ${totalLeft} - ${totalRight} = ${mystery} kg.`
-            ]
+            explanation = [`Strategy: A balanced scale means both sides weigh the same.`, `Left: ${numLeft} blocks × ${itemWeight}kg = ${totalLeft}kg.`, `Right: ${numRight} blocks × ${itemWeight}kg = ${totalRight}kg + mystery box.`, `So, mystery box = ${totalLeft} - ${totalRight} = ${mystery}kg.`]
+            explanationVi = [`Chiến lược: Cân thăng bằng nghĩa là hai bên bằng nhau.`, `Trái: ${numLeft} quả × ${itemWeight}kg = ${totalLeft}kg.`, `Phải: ${numRight} quả × ${itemWeight}kg = ${totalRight}kg + hộp bí ẩn.`, `Vậy, hộp bí ẩn = ${totalLeft} - ${totalRight} = ${mystery}kg.`]
             vocab.push('equal', 'weight')
         } else {
             const fruits = ['🍎', '🍌', '🍇', '🍊', '🍓']
-            const f1 = pick(fruits)
-            const f2 = pick(fruits.filter(f => f !== f1))
-            const f3 = pick(fruits.filter(f => f !== f1 && f !== f2))
-
-            const val1 = randInt(2, 5)
-            const val2 = randInt(2, 5)
-            const val3 = randInt(1, 5)
-
-            const sum1 = val1 + val1
-            const sum2 = val1 + val2
-            const sum3 = val1 + val2 + val3
-
-            const lines = [
-                `${f1} + ${f1} = ${sum1}`,
-                `${f1} + ${f2} = ${sum2}`,
-                `${f1} + ${f2} + ${f3} = ${sum3}`
-            ]
+            const f1 = pick(fruits), f2 = pick(fruits.filter(f => f !== f1)), f3 = pick(fruits.filter(f => f !== f1 && f !== f2))
+            const val1 = randInt(2, 5), val2 = randInt(2, 5), val3 = randInt(1, 5)
+            const sum1 = val1 + val1, sum2 = val1 + val2, sum3 = val1 + val2 + val3
+            const lines = [`${f1} + ${f1} = ${sum1}`, `${f1} + ${f2} = ${sum2}`, `${f1} + ${f2} + ${f3} = ${sum3}`]
 
             prompt = `Solve the puzzle. What is the value of ${f3}?`
             audioText = `Solve the puzzle. What is the value of the third fruit?`
@@ -751,20 +445,8 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             options = numberOptions(val3, [val1, val2, val3 + 1], 1, 20)
             visual = { type: 'equation', lines, targetEmoji: f3 }
 
-            explanation = [
-                `Strategy: Solve the easiest equation first (Step-by-step).`,
-                `Step 1: ${f1} + ${f1} = ${sum1}. So, one ${f1} is ${val1}.`,
-                `Step 2: Replace ${f1} in the second line: ${val1} + ${f2} = ${sum2}. This means ${f2} is ${val2}.`,
-                `Step 3: Now we know all fruits! ${val1} + ${val2} + ${f3} = ${sum3}.`,
-                `Therefore, ${f3} = ${val3}.`
-            ]
-            explanationVi = [
-                `Chiến lược: Giải phương trình dễ nhất trước (Từng bước một).`,
-                `Bước 1: ${f1} + ${f1} = ${sum1}. Vậy, một ${f1} bằng ${val1}.`,
-                `Bước 2: Thay ${f1} vào dòng 2: ${val1} + ${f2} = ${sum2}. Nghĩa là ${f2} bằng ${val2}.`,
-                `Bước 3: Bây giờ ta đã biết hết trái cây! ${val1} + ${val2} + ${f3} = ${sum3}.`,
-                `Do đó, ${f3} = ${val3}.`
-            ]
+            explanation = [`Strategy: Solve the easiest equation first.`, `Step 1: ${f1} + ${f1} = ${sum1}. So ${f1} = ${val1}.`, `Step 2: ${val1} + ${f2} = ${sum2}. So ${f2} = ${val2}.`, `Step 3: ${val1} + ${val2} + ${f3} = ${sum3}. So ${f3} = ${val3}.`]
+            explanationVi = [`Chiến lược: Giải phương trình dễ trước.`, `Bước 1: ${f1} + ${f1} = ${sum1}. Vậy ${f1} = ${val1}.`, `Bước 2: ${val1} + ${f2} = ${sum2}. Vậy ${f2} = ${val2}.`, `Bước 3: ${val1} + ${val2} + ${f3} = ${sum3}. Vậy ${f3} = ${val3}.`]
             vocab.push('equal')
         }
     }
