@@ -28,6 +28,8 @@ export type SubSkillId =
     | 'thinking.riddle' | 'thinking.mixed'
     | 'english.number' | 'english.addsub' | 'english.muldiv' | 'english.word'
     | 'english.pattern' | 'english.geometry' | 'english.measure' | 'english.logic'
+    | 'english.detective' | 'english.elimination'
+    | 'english.algebra'
 
 export type MissionId = 1 | 2 | 3 | 4 | 5
 export type ThinkingTopic = 'pattern' | 'logic' | 'space' | 'riddle' | 'mixed'
@@ -59,7 +61,6 @@ export type ThinkingProgress = {
     topics: Record<ThinkingTopic, ProgressEntry>
 }
 
-// Mục 1: Thêm type VocabEntry (đã thêm)
 export type VocabEntry = {
     id: string
     en: string
@@ -71,7 +72,6 @@ export type VocabEntry = {
     exampleVi: string
 }
 
-// Mục 1: Khôi phục VocabProgress
 export type VocabProgress = Record<string, {
     box: 1 | 2 | 3 | 4
     lastSeen: string
@@ -82,6 +82,9 @@ export type VocabProgress = Record<string, {
 export type EnglishProgress = {
     vocabProgress: VocabProgress
     levels: Record<EnglishLevel, ProgressEntry>
+    recent: Record<EnglishLevel, boolean[]>
+    recentNoTranslate: Record<EnglishLevel, boolean[]>
+    mockTestPassed: Record<EnglishLevel, boolean>
 }
 
 export type GlobalStats = {
@@ -113,7 +116,6 @@ export type ActivityBaseProps = {
     startDifficulty?: Difficulty
 }
 
-// Mục 1: Khôi phục BossBattleProps
 export type BossBattleProps = {
     onBack: () => void
     onWin: () => void
@@ -130,12 +132,20 @@ export type Question = {
     explanation: string[]
 }
 
-// Mục 1: Khôi phục BossQuestion
 export type BossQuestion = Question & {
     source: MissionId
 }
 
-export type EnglishTopic = 'number' | 'addsub' | 'muldiv' | 'word' | 'pattern' | 'geometry' | 'measure' | 'logic'
+export type EnglishTopic =
+    | 'number' | 'addsub' | 'muldiv' | 'word'
+    | 'pattern' | 'geometry' | 'measure' | 'logic'
+    | 'detective' | 'elimination' | 'algebra'
+
+export type QuestionVisual =
+    | { type: 'clock'; hour: number; minute: 0 | 30 }
+    | { type: 'emoji'; text: string }
+    | { type: 'balance'; leftWeight: number; rightWeight: number; mysteryWeight: number; itemEmoji: string }
+    | { type: 'equation'; lines: string[]; targetEmoji: string }
 
 export type EnglishQuestion = Question & {
     level: EnglishLevel
@@ -144,6 +154,7 @@ export type EnglishQuestion = Question & {
     promptVi: string
     vocab: string[]
     explanationVi: string[]
+    visual?: QuestionVisual
 }
 
 export type AnswerMeta = {
@@ -151,10 +162,4 @@ export type AnswerMeta = {
     usedTranslate: boolean
     wordsTapped: string[]
     timeSpent: number
-}
-export type EnglishProgress = {
-    vocabProgress: VocabProgress
-    levels: Record<EnglishLevel, ProgressEntry>
-    recent: Record<EnglishLevel, boolean[]>
-    recentNoTranslate: Record<EnglishLevel, boolean[]> // MỚI
 }

@@ -8,14 +8,16 @@ export const PEOPLE: Person[] = [
     { en: 'Mia', vi: 'Mia', gender: 'f' },
 ]
 
-export type Item = { id: string; sg: string; pl: string; viNoun: string }
+export type Item = { id: string; sg: string; pl: string; viNoun: string; emoji: string }
 export const ITEMS: Item[] = [
-    { id: 'apple', sg: 'apple', pl: 'apples', viNoun: 'quả táo' },
-    { id: 'pen', sg: 'pen', pl: 'pens', viNoun: 'cái bút' },
-    { id: 'book', sg: 'book', pl: 'books', viNoun: 'quyển sách' },
-    { id: 'candy', sg: 'candy', pl: 'candies', viNoun: 'viên kẹo' },
-    { id: 'sticker', sg: 'sticker', pl: 'stickers', viNoun: 'hình dán' },
-    { id: 'ball', sg: 'ball', pl: 'balls', viNoun: 'quả bóng' },
+    { id: 'apple', sg: 'apple', pl: 'apples', viNoun: 'quả táo', emoji: '🍎' },
+    { id: 'pen', sg: 'pen', pl: 'pens', viNoun: 'cái bút', emoji: '🖊️' },
+    { id: 'book', sg: 'book', pl: 'books', viNoun: 'quyển sách', emoji: '📕' },
+    { id: 'candy', sg: 'candy', pl: 'candies', viNoun: 'viên kẹo', emoji: '🍬' },
+    { id: 'sticker', sg: 'sticker', pl: 'stickers', viNoun: 'hình dán', emoji: '🌟' },
+    { id: 'ball', sg: 'ball', pl: 'balls', viNoun: 'quả bóng', emoji: '⚽' },
+    { id: 'box', sg: 'box', pl: 'boxes', viNoun: 'cái hộp', emoji: '📦' },
+    { id: 'hat', sg: 'hat', pl: 'hats', viNoun: 'cái mũ', emoji: '🧢' },
 ]
 
 export const noun = (n: number, item: Item) => `${n} ${n === 1 ? item.sg : item.pl}`
