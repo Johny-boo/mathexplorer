@@ -147,8 +147,8 @@ return (
                             </div>
 
                             < div className = "profile-meta" >
-                                <span>📅 Lần cuối học: <b>{ state.lastActiveDate } < /b></span >
-                                    <span>🏝️ Chơi nhiều nhất: <b>{ mostPlayedIsland } < /b></span >
+                                <span>📅 Lần cuối học: <b>{ state.lastActiveDate } </b></span >
+                                    <span>🏝️ Chơi nhiều nhất: <b>{ mostPlayedIsland } </b></span >
                                         </div>
 
 {/* NHẬN XÉT */ }

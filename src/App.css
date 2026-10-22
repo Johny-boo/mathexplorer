@@ -4422,3 +4422,89 @@ button {
         transform: translateY(2px);
         box-shadow: 0 2px 0 #ca8a04;
     }
+/* Tối ưu hóa phần giải thích */
+.eng-explanation {
+    background: #f8fafc;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: left;
+    border-left: 4px solid #22c55e;
+}
+
+.eng-exp-lang strong {
+    color: #15803d;
+    font-size: 16px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.eng-exp-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Khoảng cách giữa các bước */
+}
+
+.eng-exp-step {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #334155;
+    background: #ffffff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+/* Căn chỉnh 2 nút Hints và Next Question */
+.eng-feedback-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+    .eng-feedback-actions .btn-next-question {
+        flex: 2; /* Nút Next to hơn */
+        margin: 0; /* Ghi đè margin cũ nếu có */
+    }
+
+.btn-hint {
+    flex: 1; /* Nút Hints nhỏ hơn một chút */
+    padding: 16px;
+    background: #fef08a; /* Màu vàng nhạt */
+    color: #854d0e;
+    border: 2px solid #eab308;
+    border-radius: 16px;
+    font-size: 18px;
+    font-weight: 800;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #ca8a04;
+    transition: all 0.2s;
+}
+
+    .btn-hint:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 0 #ca8a04;
+        background: #fde047;
+    }
+
+    .btn-hint:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 #ca8a04;
+    }
+
+/* Hiệu ứng mượt mà khi mở Hints */
+.eng-explanation {
+    animation: fadeSlideUp 0.3s ease-out;
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

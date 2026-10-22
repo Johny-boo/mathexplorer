@@ -288,7 +288,7 @@ export default function WordProblem({ onBack, onCorrect, onWrong, startDifficult
                     <div className="hint-step-list" >
                     {
                         question.hint.map((step, i) => (
-                            <div key= { i } className = "hint-step" > <span className="hint-step-text" > { step } < /span></div >
+                            <div key= { i } className = "hint-step" > <span className="hint-step-text" > { step } </span></div >
                                         ))
                     }
                         </div>

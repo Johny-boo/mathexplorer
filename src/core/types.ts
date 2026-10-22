@@ -6,12 +6,8 @@ export type Difficulty = 'easy' | 'medium' | 'hard' | 'expert'
 export type EnglishLevel = 1 | 2 | 3 | 4 | 5
 
 export type Rank =
-    | 'explorer'
-    | 'intermediate'
-    | 'master'
-    | 'expert'
-    | 'professor'
-    | 'grandmaster'
+    | 'explorer' | 'intermediate' | 'master'
+    | 'expert' | 'professor' | 'grandmaster'
 
 export type SkillId =
     | 'math' | 'word' | 'pattern' | 'geometry' | 'thinking' | 'english'
@@ -29,7 +25,11 @@ export type SubSkillId =
     | 'english.number' | 'english.addsub' | 'english.muldiv' | 'english.word'
     | 'english.pattern' | 'english.geometry' | 'english.measure' | 'english.logic'
     | 'english.detective' | 'english.elimination'
-    | 'english.algebra'
+    | 'english.algebra' | 'english.cryptarithm' | 'english.arithmetic_series'
+    // 10 dạng mới P0, P1, P2
+    | 'english.position' | 'english.age' | 'english.sequence'
+    | 'english.day_calc' | 'english.mult_principle' | 'english.even_odd'
+    | 'english.permutation' | 'english.fill_operators' | 'english.distribution' | 'english.pictograph' | 'english.fibonacci' | 'english.alternating_seq' | 'english.balance_chain' | 'english.magic_square' | 'english.coin_combination'
 
 export type MissionId = 1 | 2 | 3 | 4 | 5
 export type ThinkingTopic = 'pattern' | 'logic' | 'space' | 'riddle' | 'mixed'
@@ -94,6 +94,8 @@ export type GlobalStats = {
 
 export type RankProgress = Record<Difficulty, number>
 
+export type CelebratedStarsMap = Partial<Record<string, 0 | 1 | 2 | 3 | 4 | 5>>
+
 export type GlobalState = {
     xp: number
     gems: number
@@ -107,6 +109,7 @@ export type GlobalState = {
     rankProgress: RankProgress
     currentRank: Rank
     lastActiveDate: string
+    celebratedStars: CelebratedStarsMap
 }
 
 export type ActivityBaseProps = {
@@ -139,13 +142,40 @@ export type BossQuestion = Question & {
 export type EnglishTopic =
     | 'number' | 'addsub' | 'muldiv' | 'word'
     | 'pattern' | 'geometry' | 'measure' | 'logic'
-    | 'detective' | 'elimination' | 'algebra'
+    | 'detective' | 'elimination' | 'algebra' | 'cryptarithm'
+    | 'arithmetic_series'
+    // 10 dạng mới
+    | 'position' | 'age' | 'sequence'
+    | 'day_calc' | 'mult_principle' | 'even_odd'
+    | 'permutation' | 'fill_operators' | 'distribution' | 'pictograph'
+    | 'fibonacci' | 'alternating_seq' | 'balance_chain' | 'magic_square' | 'coin_combination'
 
 export type QuestionVisual =
     | { type: 'clock'; hour: number; minute: 0 | 30 }
     | { type: 'emoji'; text: string }
-    | { type: 'balance'; leftWeight: number; rightWeight: number; mysteryWeight: number; itemEmoji: string }
+    | {
+        type: 'balance';
+        leftWeight: number;
+        rightWeight: number;
+        mysteryWeight: number;
+        itemEmoji: string;
+        itemWeight: number;
+        numLeft: number;
+        numRight: number;
+    }
     | { type: 'equation'; lines: string[]; targetEmoji: string }
+    | { type: 'pictograph'; data: { name: string; count: number }[]; icon: string; multiplier: number }
+    | { type: 'thermometer'; temp: number }
+    | { type: 'peopleLine'; letters: string[]; swap1: number; swap2: number }
+    | { type: 'calendar'; monthName: string; startDay: number; daysInMonth: number; eventDay: number }
+    | { type: 'lines'; shape: 'paper_plane' | 'star' }
+    | { type: 'line_segments'; dots: number }
+    | { type: 'count_squares'; rows: number; cols: number }
+    | { type: 'count_circles'; count: number }
+    | { type: 'composite_triangles' }
+    | { type: 'symmetry'; shapeName: string }
+    | { type: 'iso_blocks'; layout: number[][] }
+    | { type: 'route_path'; rows: number; cols: number }
 
 export type EnglishQuestion = Question & {
     level: EnglishLevel
@@ -163,3 +193,11 @@ export type AnswerMeta = {
     wordsTapped: string[]
     timeSpent: number
 }
+
+// Cấu trúc mới
+export type SectionType = 'vietnamese' | 'english' | 'thinking'
+
+export type ModuleId =
+    | 'viet_number' | 'viet_word' | 'viet_pattern' | 'viet_geometry' | 'viet_measure' | 'viet_arena'
+    | 'eng_level1' | 'eng_level2' | 'eng_level3' | 'eng_level4' | 'eng_level5' | 'eng_mocktest'
+    | 'think_algorithmic' | 'think_computational' | 'think_automation' | 'think_logical' | 'think_spatial' | 'think_pattern'

@@ -333,12 +333,12 @@ export default function MathPractice({ onBack, onCorrect, onWrong, startDifficul
     < footer className = "math-score" >
         <div className="math-score-item" >
             <span aria-hidden="true" >⭐</span>
-                < div > <small>ĐIỂM SỐ < /small><strong>{score}</strong > </div>
+                < div > <small>ĐIỂM SỐ </small><strong>{score}</strong > </div>
                     </div>
                     < div className = "math-score-divider" />
                         <div className="math-score-item" >
                             <span aria-hidden="true" >📝</span>
-                                < div > <small>ĐÃ TRẢ LỜI < /small><strong>{answered}</strong > </div>
+                                < div > <small>ĐÃ TRẢ LỜI </small><strong>{answered}</strong > </div>
                                     </div>
                                     </footer>
                                     </div>

@@ -14,27 +14,13 @@ export function loadGlobalState(): GlobalState {
     try {
         const defaults = createDefaultGlobalState()
 
-        // Mục 3: Fix lỗi Number(...) || INITIAL_GEMS
         const xp = safeNumber(localStorage.getItem(key('XP')), 0)
         const gems = safeNumber(localStorage.getItem(key('Gems')), INITIAL_GEMS)
         const bossWins = safeNumber(localStorage.getItem(key('BossWins')), 0)
 
         const missionProgress = safeParse(localStorage.getItem(key('MissionProgress'))) ?? defaults.missionProgress
         const thinkingProgress = safeParse(localStorage.getItem(key('ThinkingProgress'))) ?? defaults.thinkingProgress
-
-        // Mục 3: Migrate v5 sang v6 cho EnglishProgress
-        const savedEnglish = safeParse<any>(localStorage.getItem(key('EnglishProgress')))
-        let englishProgress = defaults.englishProgress
-        if (savedEnglish) {
-            englishProgress = {
-                ...englishProgress,
-                ...savedEnglish,
-                vocabProgress: { ...englishProgress.vocabProgress, ...(savedEnglish.vocabProgress || {}) },
-                levels: { ...englishProgress.levels, ...(savedEnglish.levels || {}) },
-                recent: { ...englishProgress.recent, ...(savedEnglish.recent || {}) },
-                recentNoTranslate: { ...englishProgress.recentNoTranslate, ...(savedEnglish.recentNoTranslate || {}) } // MỚI
-            }
-        }
+        const englishProgress = safeParse(localStorage.getItem(key('EnglishProgress'))) ?? defaults.englishProgress
 
         const savedSkills = safeParse<any>(localStorage.getItem(key('SkillStats'))) || {}
         const skillStats = { ...defaults.skillStats, ...savedSkills }
@@ -46,10 +32,12 @@ export function loadGlobalState(): GlobalState {
         const rankProgress = safeParse(localStorage.getItem(key('RankProgress'))) ?? defaults.rankProgress
         const currentRank = (localStorage.getItem(key('Rank')) as Rank) || 'explorer'
         const lastActiveDate = localStorage.getItem(key('LastActiveDate')) || new Date().toISOString().split('T')[0]
+        const celebratedStars = safeParse<any>(localStorage.getItem(key('CelebratedStars'))) ?? {}
 
         return {
             xp, gems, missionProgress, bossWins, thinkingProgress, englishProgress,
             skillStats, subSkillStats, globalStats, rankProgress, currentRank, lastActiveDate,
+            celebratedStars,
         }
     } catch (err) {
         console.warn('[storage] load failed, using defaults:', err)
@@ -71,6 +59,7 @@ export function saveGlobalState(state: GlobalState): void {
         localStorage.setItem(key('RankProgress'), JSON.stringify(state.rankProgress))
         localStorage.setItem(key('Rank'), state.currentRank)
         localStorage.setItem(key('LastActiveDate'), state.lastActiveDate)
+        localStorage.setItem(key('CelebratedStars'), JSON.stringify(state.celebratedStars))   // ← thêm
     } catch (err) {
         console.warn('[storage] save failed:', err)
     }
