@@ -133,6 +133,7 @@ export type Question = {
     options: string[]
     answer: string
     explanation: string[]
+    visualData?: any
 }
 
 export type BossQuestion = Question & {
@@ -174,8 +175,33 @@ export type QuestionVisual =
     | { type: 'count_circles'; count: number }
     | { type: 'composite_triangles' }
     | { type: 'symmetry'; shapeName: string }
-    | { type: 'iso_blocks'; layout: number[][] }
+    | {
+        type: 'iso_blocks';
+        layout?: number[][];
+        blocks?: { x: number; y: number; z: number; color?: string; highlighted?: boolean }[];
+        targetCuboid?: { x: number; y: number; z: number };
+        subtitle?: string;
+        colorTheme?: 'blue' | 'emerald' | 'amber' | 'purple' | 'multi' | 'rose';
+        showGridFloor?: boolean;
+    }
     | { type: 'route_path'; rows: number; cols: number }
+    | {
+        type: 'magic_square';
+        grid?: number[][];
+        missingR?: number;
+        missingC?: number;
+        magicSum?: number;
+        data?: {
+            base?: number[][];
+            missingR?: number;
+            missingC?: number;
+            magicSum?: number;
+        };
+    }
+    | {
+        type: 'coins';
+        coins: { value: number; count: number; label: string }[];
+    }
 
 export type EnglishQuestion = Question & {
     level: EnglishLevel

@@ -43,6 +43,8 @@ export const VOCABULARY_BANK: VocabEntry[] = [
     // 5. Logic
     { id: 'next', en: 'next', vi: 'tiếp theo', group: 'logic', level: 1, example: 'What is next?', exampleVi: 'Tiếp theo là gì?' },
     { id: 'odd', en: 'odd', vi: 'số lẻ / khác biệt', group: 'logic', level: 1, example: 'Find the odd one out.', exampleVi: 'Tìm cái khác biệt.' },
+    { id: 'even', en: 'even', vi: 'số chẵn', emoji: '🔢', group: 'logic', level: 1, example: 'Two is an even number.', exampleVi: 'Hai là số chẵn.' },
+    { id: 'number', en: 'number', vi: 'con số', emoji: '🔢', group: 'number', level: 1, example: 'Pick a number.', exampleVi: 'Chọn một con số.' },
 
     // 6. Ngữ cảnh đời sống (Dùng trong câu hỏi)
     { id: 'apple', en: 'apple', vi: 'quả táo', emoji: '🍎', group: 'life', level: 1, example: 'I eat an apple.', exampleVi: 'Tôi ăn một quả táo.' },
@@ -96,4 +98,12 @@ export const VOCABULARY_BANK: VocabEntry[] = [
     { id: 'pack', en: 'pack', vi: 'đóng gói', group: 'life', level: 3, example: 'Pack the books.', exampleVi: 'Đóng gói sách.' },
     { id: 'equal', en: 'equal', vi: 'bằng nhau', group: 'operation', level: 3, example: 'Equal parts.', exampleVi: 'Các phần bằng nhau.' },
     { id: 'remain', en: 'remain', vi: 'còn lại', group: 'operation', level: 3, example: 'How many remain?', exampleVi: 'Còn lại bao nhiêu?' },
+
+    // Từ vựng Hình học không gian 3D (Level 4 & 5)
+    { id: 'cube', en: 'cube', vi: 'khối lập phương', emoji: '🧊', group: 'shape', level: 4, example: 'A cube has 6 square faces.', exampleVi: 'Khối lập phương có 6 mặt hình vuông.' },
+    { id: 'solid', en: 'solid', vi: 'khối đặc / hình khối', emoji: '📦', group: 'shape', level: 5, example: 'A solid 3D figure.', exampleVi: 'Một khối hình 3 chiều đặc.' },
+    { id: 'layer', en: 'layer', vi: 'tầng / lớp', emoji: '🥞', group: 'shape', level: 4, example: 'Count the cubes layer by layer.', exampleVi: 'Đếm các khối lập phương theo từng tầng.' },
+    { id: 'column', en: 'column', vi: 'cột (thẳng đứng)', emoji: '🏛️', group: 'shape', level: 4, example: 'The tallest column has 3 cubes.', exampleVi: 'Cột cao nhất có 3 khối lập phương.' },
+    { id: 'height', en: 'height', vi: 'chiều cao', emoji: '📏', group: 'shape', level: 4, example: 'What is the height of the column?', exampleVi: 'Chiều cao của cột là bao nhiêu?' },
+    { id: 'hidden', en: 'hidden', vi: 'bị che khuất', emoji: '🙈', group: 'logic', level: 5, example: 'Some cubes are hidden behind.', exampleVi: 'Một số khối bị che khuất ở phía sau.' },
 ]

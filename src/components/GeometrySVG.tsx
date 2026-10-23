@@ -89,36 +89,246 @@ export default function GeometrySVG({ visual }: { visual: QuestionVisual }) {
         )
     }
 
-    // 7. Khối 3D Isometric (Đếm khối / Nhìn từ trên)
+    // 7. Khối 3D Isometric (Đếm khối / Nhìn từ trên / Hoàn thiện khối)
     if (visual.type === 'iso_blocks') {
-        const cellW = 40
-        const cellH = 23 // ~40 * sin(30) / cos(30)...
-        const width = visual.layout[0].length * cellW + 40
-        const height = visual.layout.length * cellH + 40
+        const cellW = 46
+        const cellH = 24
+        const cellL = 26
+
+        // Thu thập toàn bộ khối 3D (x, y, z)
+        type Block = { x: number; y: number; z: number }
+        const blocks: Block[] = []
+
+        if (visual.blocks && visual.blocks.length > 0) {
+            blocks.push(...visual.blocks)
+        } else if (visual.layout && visual.layout.length > 0) {
+            visual.layout.forEach((row, r) => {
+                row.forEach((val, c) => {
+                    for (let z = 0; z < val; z++) {
+                        blocks.push({ x: c, y: r, z })
+                    }
+                })
+            })
+        }
+
+        // Kích thước lưới sàn
+        const maxCols = visual.layout ? visual.layout[0].length : Math.max(...blocks.map(b => b.x), 2) + 1
+        const maxRows = visual.layout ? visual.layout.length : Math.max(...blocks.map(b => b.y), 2) + 1
+
+        // Sắp xếp theo thuật toán Painter (vẽ từ xa tới gần, từ dưới lên trên)
+        const sortedBlocks = [...blocks].sort((a, b) => {
+            if ((a.x + a.y) !== (b.x + b.y)) {
+                return (a.x + a.y) - (b.x + b.y)
+            }
+            if (a.z !== b.z) {
+                return a.z - b.z
+            }
+            return a.x - b.x
+        })
+
+        // Bảng màu cho từng tầng hoặc theme
+        const theme = visual.colorTheme || 'multi'
+        const getColors = (z: number) => {
+            if (theme === 'multi') {
+                if (z === 0) return { top: '#67e8f9', left: '#22d3ee', right: '#0891b2', stroke: '#155e75' }
+                if (z === 1) return { top: '#fde047', left: '#fbbf24', right: '#d97706', stroke: '#78350f' }
+                if (z === 2) return { top: '#fda4af', left: '#fb7185', right: '#e11d48', stroke: '#881337' }
+                return { top: '#d8b4fe', left: '#c084fc', right: '#9333ea', stroke: '#4c1d95' }
+            }
+            if (theme === 'emerald') {
+                return { top: '#86efac', left: '#34d399', right: '#059669', stroke: '#064e3b' }
+            }
+            if (theme === 'amber') {
+                return { top: '#fde047', left: '#fbbf24', right: '#d97706', stroke: '#78350f' }
+            }
+            if (theme === 'purple') {
+                return { top: '#d8b4fe', left: '#c084fc', right: '#9333ea', stroke: '#4c1d95' }
+            }
+            if (theme === 'rose') {
+                return { top: '#fda4af', left: '#fb7185', right: '#e11d48', stroke: '#881337' }
+            }
+            // default blue
+            return { top: '#93c5fd', left: '#60a5fa', right: '#2563eb', stroke: '#1e3a8a' }
+        }
+
+        // Tính toán bounding box chính xác để auto-center và không bao giờ bị cắt
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity
+
+        // Kiểm tra toạ độ đỉnh sàn
+        for (let r = 0; r <= maxRows; r++) {
+            for (let c = 0; c <= maxCols; c++) {
+                const fx = (c - r) * (cellW / 2)
+                const fy = (c + r) * (cellH / 2) + cellL
+                if (fx < minX) minX = fx
+                if (fx > maxX) maxX = fx
+                if (fy < minY) minY = fy
+                if (fy > maxY) maxY = fy
+            }
+        }
+
+        // Kiểm tra toạ độ đỉnh các khối
+        sortedBlocks.forEach(b => {
+            const cx = (b.x - b.y) * (cellW / 2)
+            const cy = (b.x + b.y) * (cellH / 2) - b.z * cellL
+            const ptsX = [cx - cellW / 2, cx + cellW / 2]
+            const ptsY = [cy, cy + cellH + cellL]
+            ptsX.forEach(px => {
+                if (px < minX) minX = px
+                if (px > maxX) maxX = px
+            })
+            ptsY.forEach(py => {
+                if (py < minY) minY = py
+                if (py > maxY) maxY = py
+            })
+        })
+
+        // Nếu có targetCuboid (khối lập phương mục tiêu)
+        if (visual.targetCuboid) {
+            const tx = visual.targetCuboid.x
+            const ty = visual.targetCuboid.y
+            const tz = visual.targetCuboid.z
+            const topPeakY = (0 + 0) * (cellH / 2) - (tz - 1) * cellL
+            if (topPeakY < minY) minY = topPeakY
+            const cornerX1 = (tx - 0) * (cellW / 2)
+            const cornerX2 = (0 - ty) * (cellW / 2)
+            if (cornerX1 > maxX) maxX = cornerX1
+            if (cornerX2 < minX) minX = cornerX2
+        }
+
+        const pad = 18
+        const viewW = Math.max(160, Math.ceil(maxX - minX + pad * 2))
+        const viewH = Math.max(140, Math.ceil(maxY - minY + pad * 2))
+        const viewX = Math.floor(minX - pad)
+        const viewY = Math.floor(minY - pad)
 
         return (
-            <svg viewBox={`0 0 ${width} ${height}`} style={{ width: '100%', maxWidth: '250px', height: 'auto', margin: '20px auto', display: 'block' }}>
-                {visual.layout.map((row, r) =>
-                    row.map((val, c) => {
-                        if (val === 0) return null
-                        // Tọa độ đỉnh trên cùng của khối
-                        const cx = width / 2 + (c - r) * (cellW / 2)
-                        const cy = 20 + (c + r) * (cellH / 2)
+            <div style={{ margin: '16px auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                {visual.subtitle && (
+                    <div style={{ marginBottom: '8px', textAlign: 'center' }}>
+                        <span style={{
+                            display: 'inline-block',
+                            background: '#eff6ff',
+                            color: '#1d4ed8',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            padding: '4px 14px',
+                            borderRadius: '999px',
+                            border: '1px solid #bfdbfe'
+                        }}>
+                            🧊 {visual.subtitle}
+                        </span>
+                    </div>
+                )}
+                <svg
+                    viewBox={`${viewX} ${viewY} ${viewW} ${viewH}`}
+                    style={{
+                        width: '100%',
+                        maxWidth: '280px',
+                        maxHeight: '240px',
+                        height: 'auto',
+                        display: 'block'
+                    }}
+                >
+                    {/* 1. Lưới mặt sàn đáy (Ground plate) */}
+                    {visual.showGridFloor !== false && (
+                        <g opacity="0.6">
+                            {Array.from({ length: maxRows }).map((_, r) =>
+                                Array.from({ length: maxCols }).map((__, c) => {
+                                    const cx = (c - r) * (cellW / 2)
+                                    const cy = (c + r) * (cellH / 2) + cellL
+                                    return (
+                                        <polygon
+                                            key={`floor-${r}-${c}`}
+                                            points={`${cx},${cy} ${cx + cellW / 2},${cy + cellH / 2} ${cx},${cy + cellH} ${cx - cellW / 2},${cy + cellH / 2}`}
+                                            fill="#f8fafc"
+                                            stroke="#cbd5e1"
+                                            strokeWidth="1.2"
+                                            strokeDasharray="2,2"
+                                        />
+                                    )
+                                })
+                            )}
+                        </g>
+                    )}
 
-                        // Vẽ khối lập phương 3 mặt (Top, Left, Right)
+                    {/* 2. Khung khối lập phương mục tiêu (Target Cuboid Wireframe) nếu có */}
+                    {visual.targetCuboid && (
+                        <g opacity="0.45">
+                            {(() => {
+                                const tx = visual.targetCuboid.x
+                                const ty = visual.targetCuboid.y
+                                const tz = visual.targetCuboid.z
+                                // 4 góc đỉnh sàn đáy
+                                const b0 = { x: 0, y: cellL }
+                                const b1 = { x: tx * (cellW / 2), y: tx * (cellH / 2) + cellL }
+                                const b2 = { x: (tx - ty) * (cellW / 2), y: (tx + ty) * (cellH / 2) + cellL }
+                                const b3 = { x: -ty * (cellW / 2), y: ty * (cellH / 2) + cellL }
+                                // 4 góc đỉnh trên
+                                const tShift = tz * cellL
+                                const t0 = { x: b0.x, y: b0.y - tShift }
+                                const t1 = { x: b1.x, y: b1.y - tShift }
+                                const t2 = { x: b2.x, y: b2.y - tShift }
+                                const t3 = { x: b3.x, y: b3.y - tShift }
+
+                                return (
+                                    <>
+                                        {/* Viền ngoài trên cùng */}
+                                        <polygon
+                                            points={`${t0.x},${t0.y} ${t1.x},${t1.y} ${t2.x},${t2.y} ${t3.x},${t3.y}`}
+                                            fill="#e0e7ff"
+                                            fillOpacity="0.15"
+                                            stroke="#6366f1"
+                                            strokeWidth="1.5"
+                                            strokeDasharray="4,4"
+                                        />
+                                        {/* Các cột góc đứng */}
+                                        <line x1={b0.x} y1={b0.y} x2={t0.x} y2={t0.y} stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4,4" />
+                                        <line x1={b1.x} y1={b1.y} x2={t1.x} y2={t1.y} stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4,4" />
+                                        <line x1={b2.x} y1={b2.y} x2={t2.x} y2={t2.y} stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4,4" />
+                                        <line x1={b3.x} y1={b3.y} x2={t3.x} y2={t3.y} stroke="#6366f1" strokeWidth="1.5" strokeDasharray="4,4" />
+                                    </>
+                                )
+                            })()}
+                        </g>
+                    )}
+
+                    {/* 3. Các khối lập phương 3D vẽ theo thứ tự Painter */}
+                    {sortedBlocks.map((b, idx) => {
+                        const cx = (b.x - b.y) * (cellW / 2)
+                        const cy = (b.x + b.y) * (cellH / 2) - b.z * cellL
+                        const col = getColors(b.z)
+
                         return (
-                            <g key={`${r}-${c}`}>
-                                {/* Mặt trên */}
-                                <polygon points={`${cx},${cy} ${cx + cellW / 2},${cy + cellH / 2} ${cx},${cy + cellH} ${cx - cellW / 2},${cy + cellH / 2}`} fill="#93c5fd" stroke="#1e3a8a" strokeWidth="2" />
-                                {/* Mặt trái */}
-                                <polygon points={`${cx - cellW / 2},${cy + cellH / 2} ${cx},${cy + cellH} ${cx},${cy + cellH * 2} ${cx - cellW / 2},${cy + cellH * 1.5}`} fill="#60a5fa" stroke="#1e3a8a" strokeWidth="2" />
-                                {/* Mặt phải */}
-                                <polygon points={`${cx + cellW / 2},${cy + cellH / 2} ${cx},${cy + cellH} ${cx},${cy + cellH * 2} ${cx + cellW / 2},${cy + cellH * 1.5}`} fill="#3b82f6" stroke="#1e3a8a" strokeWidth="2" />
+                            <g key={`b-${b.x}-${b.y}-${b.z}-${idx}`} style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.06))' }}>
+                                {/* Mặt trên (Top face) */}
+                                <polygon
+                                    points={`${cx},${cy} ${cx + cellW / 2},${cy + cellH / 2} ${cx},${cy + cellH} ${cx - cellW / 2},${cy + cellH / 2}`}
+                                    fill={col.top}
+                                    stroke={col.stroke}
+                                    strokeWidth="1.8"
+                                    strokeLinejoin="round"
+                                />
+                                {/* Mặt trái (Left face) */}
+                                <polygon
+                                    points={`${cx - cellW / 2},${cy + cellH / 2} ${cx},${cy + cellH} ${cx},${cy + cellH + cellL} ${cx - cellW / 2},${cy + cellH / 2 + cellL}`}
+                                    fill={col.left}
+                                    stroke={col.stroke}
+                                    strokeWidth="1.8"
+                                    strokeLinejoin="round"
+                                />
+                                {/* Mặt phải (Right face) */}
+                                <polygon
+                                    points={`${cx},${cy + cellH} ${cx + cellW / 2},${cy + cellH / 2} ${cx + cellW / 2},${cy + cellH / 2 + cellL} ${cx},${cy + cellH + cellL}`}
+                                    fill={col.right}
+                                    stroke={col.stroke}
+                                    strokeWidth="1.8"
+                                    strokeLinejoin="round"
+                                />
                             </g>
                         )
-                    })
-                )}
-            </svg>
+                    })}
+                </svg>
+            </div>
         )
     }
 

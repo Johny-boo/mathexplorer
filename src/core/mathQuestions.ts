@@ -11,5 +11,6 @@ export function createMathQ(difficulty: Difficulty): Question {
         options: q.options,
         answer: q.answer,
         explanation: [`Đáp án đúng là ${q.answer}`],
+        visualData: q.visualData,
     }
 }

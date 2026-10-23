@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Difficulty, SubSkillId } from './core/types'
+import MathVisualizer, { type MathVisualData } from './components/MathVisualizer'
 
 type Props = {
     onBack: () => void
@@ -13,6 +14,7 @@ export type MathQuestion = {
     options: string[]
     answer: string
     subSkill: SubSkillId
+    visualData?: MathVisualData
 }
 
 type FeedbackState = 'none' | 'correct' | 'incorrect' | 'exploding' | 'review'
@@ -56,6 +58,7 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
     let answerStr = ''
     let options: string[] = []
     let subSkill: SubSkillId = 'math.add'
+    let visualData: MathVisualData | undefined = undefined
 
     // Thiết lập giới hạn số liệu theo cấp độ
     let max = 20
@@ -70,6 +73,7 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
         answerStr = String(a + b)
         options = generateNumberOptions(a + b)
         subSkill = 'math.add'
+        visualData = { type: 'addition', a, b }
     }
     else if (type === 'sub') {
         const a = randInt(max / 2, max), b = randInt(10, a - 5)
@@ -77,6 +81,7 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
         answerStr = String(a - b)
         options = generateNumberOptions(a - b)
         subSkill = 'math.sub'
+        visualData = { type: 'subtraction', a, b }
     }
     else if (type === 'mul') {
         const a = randInt(2, mulMax), b = randInt(2, 9)
@@ -84,6 +89,7 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
         answerStr = String(a * b)
         options = generateNumberOptions(a * b)
         subSkill = 'math.mul'
+        visualData = { type: 'multiplication', a, b }
     }
     else if (type === 'div') {
         const b = randInt(2, mulMax), ans = randInt(2, 9)
@@ -92,6 +98,7 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
         answerStr = String(ans)
         options = generateNumberOptions(ans)
         subSkill = 'math.mul'
+        visualData = { type: 'division', a, b }
     }
     else if (type === 'missing_add') {
         const a = randInt(5, max / 2), ans = randInt(10, max)
@@ -99,6 +106,7 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
         answerStr = String(ans - a)
         options = generateNumberOptions(ans - a)
         subSkill = 'math.add'
+        visualData = { type: 'missing_add', a, total: ans }
     }
     else if (type === 'missing_sub') {
         const ans = randInt(5, max / 2), b = randInt(5, max / 2)
@@ -106,6 +114,7 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
         answerStr = String(ans + b)
         options = generateNumberOptions(ans + b)
         subSkill = 'math.sub'
+        visualData = { type: 'missing_sub', a: ans + b, b }
     }
     else if (type === 'missing_mul') {
         const a = randInt(2, mulMax), ans = randInt(2, 9) * a
@@ -113,6 +122,7 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
         answerStr = String(ans / a)
         options = generateNumberOptions(ans / a)
         subSkill = 'math.mul'
+        visualData = { type: 'multiplication', a, b: ans / a }
     }
     else if (type === 'compare') {
         const a = randInt(10, max / 2), b = randInt(10, max / 2)
@@ -123,25 +133,26 @@ export function createQuestion(difficulty: Difficulty): MathQuestion {
         answerStr = left > right ? '>' : left < right ? '<' : '='
         options = shuffle(['>', '<', '='])
         subSkill = 'math.add'
+        visualData = { type: 'compare', a: left, b: right }
     }
     else if (type === 'mixed3') {
-        // Biểu thức 3 số (cộng trừ)
         const a = randInt(10, max / 2), b = randInt(5, max / 2), c = randInt(2, max / 3)
         prompt = `${a} + ${b} − ${c} = ?`
         answerStr = String(a + b - c)
         options = generateNumberOptions(a + b - c)
         subSkill = 'math.add'
+        visualData = { type: 'mixed3', a, b, c }
     }
     else if (type === 'mixed_mul') {
-        // Biểu thức có nhân (nhân trước, cộng sau)
         const a = randInt(2, mulMax), b = randInt(2, 5), c = randInt(5, max / 2)
         prompt = `${a} × ${b} + ${c} = ?`
         answerStr = String(a * b + c)
         options = generateNumberOptions(a * b + c)
         subSkill = 'math.mul'
+        visualData = { type: 'mixed_mul', a, b, c, op: '+' }
     }
 
-    return { prompt, options, answer: answerStr, subSkill }
+    return { prompt, options, answer: answerStr, subSkill, visualData }
 }
 
 const correctSounds = [new Audio('/sounds/yes.mp3'), new Audio('/sounds/yes1.mp3')]
@@ -296,14 +307,17 @@ export default function MathPractice({ onBack, onCorrect, onWrong, startDifficul
                 < span className = "total-time" >🏴‍☠️ Tổng: { elapsedSeconds } s </span>
                     </div>
 
-                    < section className = "math-question" >
-                        <div style={ { textAlign: 'center', marginBottom: '40px' } }>
-                            <span style={ { fontSize: '64px', fontWeight: 900, fontFamily: "'Baloo 2', sans-serif", color: 'var(--mp-accent-blue)', textShadow: '0 4px 0 #D4C4A3' } }>
-                            { question.prompt }
-                                </span>
-                                </div>
+                    <section className="math-question">
+                        {/* Minh họa mô hình trực quan toán học */}
+                        {question.visualData && <MathVisualizer data={question.visualData} />}
 
-                                < p className = "math-instruction" > Chọn đáp án đúng bên dưới nhé! </p>
+                        <div style={{ textAlign: 'center', margin: '20px 0 24px' }}>
+                            <span style={{ fontSize: '56px', fontWeight: 900, fontFamily: "'Baloo 2', sans-serif", color: 'var(--mp-accent-blue)', textShadow: '0 4px 0 #D4C4A3' }}>
+                                {question.prompt}
+                            </span>
+                        </div>
+
+                        <p className="math-instruction">Quan sát mô hình toán học và chọn đáp án chính xác:</p>
                                     < div className = "math-options" >
                                     {
                                         question.options.map((option) => {

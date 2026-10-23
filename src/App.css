@@ -4508,3 +4508,1048 @@ button {
         transform: translateY(0);
     }
 }
+
+/* =========================================================
+   MÔ HÌNH TRỰC QUAN TOÁN HỌC (MATH VISUALIZER)
+   ========================================================= */
+.math-visual-container {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 20px 24px;
+    margin: 16px auto 24px;
+    max-width: 600px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+}
+
+.visual-header-label {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+/* Sơ đồ đoạn thẳng (Tape Diagram) */
+.tape-diagram-wrapper {
+    margin: 12px 0;
+}
+
+.tape-total-label {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.tape-bar-row {
+    display: flex;
+    height: 48px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid #334155;
+    box-shadow: 0 4px 0 #1e293b;
+}
+
+.tape-segment {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    transition: width 0.3s ease;
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.segment-blue {
+    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+    border-right: 2px solid #0369a1;
+}
+
+.segment-amber {
+    background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+}
+
+.segment-emerald {
+    background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+    border-right: 2px solid #047857;
+}
+
+.segment-subtracted {
+    background: repeating-linear-gradient(45deg, #f87171, #f87171 10px, #ef4444 10px, #ef4444 20px);
+    color: #ffffff;
+}
+
+.segment-missing {
+    background: repeating-linear-gradient(45deg, #fef08a, #fef08a 10px, #fde047 10px, #fde047 20px);
+    color: #854d0e;
+    border-left: 2px dashed #ca8a04;
+}
+
+.tape-bracket {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.bracket-line {
+    height: 6px;
+    border-bottom: 2px solid #64748b;
+    border-left: 2px solid #64748b;
+    border-right: 2px solid #64748b;
+    border-radius: 0 0 4px 4px;
+    margin-bottom: 4px;
+}
+
+.bracket-label {
+    font-size: 15px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.bracket-question {
+    color: #ef4444;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+/* Đếm chấm tròn */
+.counters-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed #e2e8f0;
+    flex-wrap: wrap;
+}
+
+.counter-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.counter-tag {
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tag-blue { color: #0284c7; }
+.tag-amber { color: #d97706; }
+
+.counter-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    max-width: 140px;
+    justify-content: center;
+}
+
+.dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0,0,0,0.15);
+}
+
+.dot-blue {
+    background: #0284c7;
+    box-shadow: inset 0 2px 0 #38bdf8;
+}
+
+.dot-amber {
+    background: #f59e0b;
+    box-shadow: inset 0 2px 0 #fde047;
+}
+
+.counter-plus {
+    font-size: 20px;
+    font-weight: 900;
+    color: #64748b;
+}
+
+/* Mảng ma trận phép nhân (Array Grid) */
+.multiplication-grid-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.grid-dimension-top {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0284c7;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.grid-body-with-side {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.grid-dimension-left {
+    font-size: 14px;
+    font-weight: 800;
+    color: #0284c7;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+}
+
+.math-dot-grid {
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    background: #f8fafc;
+    border: 2px dashed #94a3b8;
+    border-radius: 12px;
+}
+
+.array-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #3b82f6;
+    border: 2px solid #1d4ed8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.array-dot-core {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ffffff;
+    opacity: 0.6;
+}
+
+/* Phép chia đều (Division) */
+.division-groups-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin: 14px 0;
+}
+
+.division-group-plate {
+    background: #f1f5f9;
+    border: 2px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 12px 16px;
+    min-width: 100px;
+    text-align: center;
+    box-shadow: 0 3px 0 #94a3b8;
+}
+
+.group-plate-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.group-plate-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    min-height: 24px;
+    margin-bottom: 6px;
+}
+
+.group-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #10b981;
+    border: 1px solid #059669;
+}
+
+.group-plate-count {
+    font-size: 12px;
+    font-weight: 800;
+    color: #ef4444;
+}
+
+/* So sánh (Compare bars) */
+.compare-bars-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 12px 0;
+}
+
+.compare-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.compare-label {
+    width: 110px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #475569;
+    text-align: right;
+}
+
+.compare-bar-track {
+    flex: 1;
+    background: #f1f5f9;
+    border-radius: 8px;
+    height: 36px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.compare-bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 12px;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 15px;
+    border-radius: 8px;
+    transition: width 0.3s;
+}
+
+.bar-purple { background: linear-gradient(90deg, #a855f7 0%, #7c3aed 100%); }
+.bar-teal { background: linear-gradient(90deg, #14b8a6 0%, #0d9488 100%); }
+
+.compare-center-symbol {
+    text-align: center;
+    margin: -4px 0;
+}
+
+.symbol-box {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    line-height: 32px;
+    border-radius: 10px;
+    border: 2px dashed #dc2626;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+/* Sơ đồ các bước phép toán (Mixed steps) */
+.mixed-steps-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 12px 0;
+    flex-wrap: wrap;
+}
+
+.step-block {
+    background: #f8fafc;
+    border: 2px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 8px 14px;
+    text-align: center;
+    min-width: 80px;
+}
+
+.step-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 2px;
+}
+
+.step-expr {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.step-sub {
+    font-size: 12px;
+    font-weight: 800;
+    color: #0284c7;
+}
+
+.step-arrow-operator {
+    font-size: 16px;
+    font-weight: 800;
+    color: #475569;
+}
+
+/* =========================================================
+   MÔ HÌNH TOÁN LỜI VĂN (WORD PROBLEM VISUALIZER)
+   ========================================================= */
+.word-visual-box {
+    background: #ffffff;
+    border: 2px solid #bbf7d0;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 16px 0 24px;
+    box-shadow: 0 4px 12px rgba(22, 101, 52, 0.06);
+}
+
+.visual-banner {
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.banner-title {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    color: #15803d;
+    background: #dcfce7;
+    padding: 4px 14px;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+}
+
+.bar-model-diagram {
+    margin: 12px 0;
+}
+
+.bar-labels-top {
+    display: flex;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 4px;
+    padding: 0 4px;
+}
+
+.bar-container {
+    display: flex;
+    height: 44px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #1e293b;
+    box-shadow: 0 3px 0 #0f172a;
+}
+
+.bar-part {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    padding: 0 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bar-primary { background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%); }
+.bar-secondary { background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%); }
+.bar-accent { background: linear-gradient(180deg, #a855f7 0%, #7c3aed 100%); }
+.bar-remaining { background: linear-gradient(180deg, #10b981 0%, #059669 100%); }
+.bar-taken { background: repeating-linear-gradient(45deg, #f87171, #f87171 8px, #ef4444 8px, #ef4444 16px); }
+
+.bar-bracket-total {
+    margin-top: 8px;
+    text-align: center;
+}
+
+.bracket-brace {
+    height: 5px;
+    border-bottom: 2px solid #475569;
+    border-left: 2px solid #475569;
+    border-right: 2px solid #475569;
+    margin-bottom: 4px;
+}
+
+.bracket-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.q-highlight {
+    color: #dc2626;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+/* Thẻ minh họa sự vật */
+.visual-items-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+}
+
+.word-item-group-card {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 8px 14px;
+    text-align: center;
+}
+
+.item-card-header {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    justify-content: center;
+}
+
+.item-card-count {
+    font-size: 18px;
+    font-weight: 900;
+    color: #0284c7;
+}
+
+.item-card-unit {
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+.item-dots-cluster {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.item-visual-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #10b981;
+}
+
+.item-more-tag {
+    font-size: 11px;
+    font-weight: 800;
+    color: #64748b;
+}
+
+.visual-plus-badge, .visual-minus-badge {
+    font-size: 14px;
+    font-weight: 800;
+    color: #475569;
+    background: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 8px;
+}
+
+.visual-result-placeholder {
+    font-size: 14px;
+    font-weight: 800;
+    color: #dc2626;
+    background: #fee2e2;
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: 1px dashed #ef4444;
+}
+
+/* Mô hình hộp đồ vật */
+.boxes-illustration-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin: 14px 0;
+}
+
+.package-box-card {
+    background: #fef3c7;
+    border: 2px solid #d97706;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 90px;
+    text-align: center;
+    box-shadow: 0 3px 0 #b45309;
+}
+
+.box-lid {
+    background: #f59e0b;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 3px 0;
+}
+
+.box-content {
+    padding: 8px 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.box-number-badge {
+    font-size: 20px;
+    font-weight: 900;
+    color: #92400e;
+}
+
+.box-unit-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #b45309;
+}
+
+.loose-items-card {
+    background: #e0f2fe;
+    border: 2px dashed #0284c7;
+    border-radius: 12px;
+    padding: 6px 10px;
+    text-align: center;
+    width: 90px;
+}
+
+.loose-header {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0369a1;
+}
+
+.loose-number-badge {
+    font-size: 20px;
+    font-weight: 900;
+    color: #0284c7;
+}
+
+.loose-unit-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0284c7;
+}
+
+/* So sánh trong Word Problem */
+.comparison-bars-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.comp-item-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.comp-name-badge {
+    width: 140px;
+    font-size: 13px;
+    font-weight: 800;
+    color: #334155;
+    text-align: right;
+}
+
+.comp-bar-container {
+    flex: 1;
+    display: flex;
+    height: 36px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.comp-bar {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.comp-bar-extra {
+    height: 100%;
+    background: repeating-linear-gradient(45deg, #fde047, #fde047 8px, #facc15 8px, #facc15 16px);
+    color: #713f12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    border-left: 2px dashed #ca8a04;
+}
+
+/* =========================================================
+   HÌNH HỌC THỰC TẾ & 3D (GEOMETRY MOUNTAIN)
+   ========================================================= */
+.geo-real-life-grid, .geo-3d-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin: 16px auto;
+    max-width: 550px;
+}
+
+.real-life-card, .shape-3d-card {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 0 #cbd5e1;
+    transition: transform 0.2s;
+}
+
+.real-life-card:hover, .shape-3d-card:hover {
+    transform: translateY(-2px);
+}
+
+.real-life-label, .shape-3d-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: #1e293b;
+    text-align: center;
+}
+
+/* =========================================================
+   CÂN THĂNG BẰNG (BALANCE SCALE)
+   ========================================================= */
+.balance-scale-wrapper {
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 16px auto;
+    max-width: 550px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.scale-status-badge {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #0369a1;
+    background: #e0f2fe;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
+
+.scale-visual-stage {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.balance-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.pan-content-left {
+    position: absolute;
+    left: 4%;
+    top: 38%;
+    width: 32%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.pan-content-right {
+    position: absolute;
+    right: 4%;
+    top: 38%;
+    width: 32%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.pan-items-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    min-height: 36px;
+}
+
+.scale-item-icon {
+    font-size: 26px;
+    line-height: 1;
+}
+
+.mystery-weight-box {
+    width: 32px;
+    height: 32px;
+    background: #ef4444;
+    border: 2px solid #991b1b;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 0 #7f1d1d;
+}
+
+.mystery-box-q {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.pan-weight-tag {
+    font-size: 14px;
+    font-weight: 900;
+    color: #1e293b;
+    background: #f1f5f9;
+    padding: 2px 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+/* =========================================================
+   HÀNG NGŨ XẾP HÀNG (PEOPLE LINE)
+   ========================================================= */
+.people-line-container {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 16px 20px;
+    margin: 16px auto;
+    max-width: 550px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+}
+
+.people-line-header {
+    font-size: 13px;
+    font-weight: 800;
+    color: #64748b;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.people-line-queue {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.person-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.person-slot.swapped-active {
+    background: #fef2f2;
+    border: 2px dashed #ef4444;
+}
+
+.person-pos-pill {
+    font-size: 11px;
+    font-weight: 800;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 6px;
+}
+
+.child-avatar-svg {
+    width: 50px;
+    height: 60px;
+}
+
+.person-name-badge {
+    font-size: 13px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.name-swapped {
+    color: #dc2626;
+}
+
+/* =========================================================
+   HỆ PHƯƠNG TRÌNH HÌNH ẢNH (VISUAL EQUATION)
+   ========================================================= */
+.visual-equation-container {
+    background: #ffffff;
+    border: 2px solid #e0e7ff;
+    border-radius: 20px;
+    padding: 18px 24px;
+    margin: 16px auto;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.05);
+}
+
+.equation-header-badge {
+    font-size: 12px;
+    font-weight: 800;
+    color: #4338ca;
+    background: #e0e7ff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    text-align: center;
+    margin-bottom: 14px;
+    display: inline-block;
+}
+
+.equation-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.equation-line-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 16px;
+}
+
+.equation-line-number {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+    width: 50px;
+}
+
+.equation-tokens-row {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.equation-item-token {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.equation-operator {
+    font-size: 22px;
+    font-weight: 900;
+    color: #475569;
+}
+
+.equation-number-badge {
+    font-size: 22px;
+    font-weight: 900;
+    color: #0f172a;
+    background: #ffffff;
+    border: 2px solid #cbd5e1;
+    padding: 2px 12px;
+    border-radius: 8px;
+}
+
+.equation-question-box {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 8px;
+    background: #fee2e2;
+    border: 2px dashed #ef4444;
+    color: #ef4444;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+/* =========================================================
+   THẺ MÔN HỌC & ĐẢO PHIÊU LƯU (MODULE CARDS WITH ARTWORK)
+   ========================================================= */
+.home-card-banner {
+    width: 100%;
+    height: 140px;
+    overflow: hidden;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.home-section-card:hover .home-banner-img {
+    transform: scale(1.04);
+}
+
+.home-card-content {
+    padding: 20px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.module-card-img-wrapper {
+    width: 100%;
+    height: 110px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    background: #ffffff;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.08);
+}
+
+.module-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.boss-header-ship {
+    width: 90px;
+    height: 90px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+}
+
+.math-prompt-box {
+    text-align: center;
+    margin: 16px 0 20px;
+}
+
+.math-prompt-value {
+    font-size: 52px;
+    font-weight: 900;
+    font-family: 'Baloo 2', sans-serif;
+    color: var(--mp-accent-blue);
+    text-shadow: 0 4px 0 #D4C4A3;
+}

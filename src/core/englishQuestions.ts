@@ -5,6 +5,7 @@ import { numberOptions, wordOptions, timeOptions, shuffle } from './englishDistr
 import { PEOPLE, ITEMS, noun, pronoun } from './englishData'
 import type { Item } from './englishData'
 import { generateArithmeticSeries } from './generators/arithmeticSeries'
+import { generateSpatialQuestion } from './generators/spatialBlocks'
 
 const pick = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
 const randInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min
@@ -163,8 +164,10 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
 
     // 6. GEOMETRY
     else if (topic === 'geometry') {
-        // Sử dụng lại code của đợt trước (đã gộp 8 dạng)
-        const type = pick(['identify', 'count_squares', 'count_circles', 'count_triangles', 'symmetry', 'line_segments', 'iso_blocks', 'route_path'])
+        const types = level <= 2
+            ? ['identify', 'count_squares', 'count_circles', 'count_triangles', 'symmetry', 'line_segments']
+            : ['iso_blocks', 'iso_blocks', 'iso_blocks', 'identify', 'count_squares', 'count_triangles', 'symmetry', 'route_path']
+        const type = pick(types)
         if (type === 'identify') {
             const shapes = [{ en: 'triangle', vi: 'tam giác', sides: 3, emoji: '🔺' }, { en: 'square', vi: 'vuông', sides: 4, emoji: '🟦' }, { en: 'pentagon', vi: 'ngũ giác', sides: 5, emoji: '⬟' }, { en: 'hexagon', vi: 'lục giác', sides: 6, emoji: '⬢' }]
             const s = pick(shapes); prompt = `How many sides does a ${s.en} have?`; promptVi = `Hình ${s.vi} có bao nhiêu cạnh?`
@@ -199,11 +202,16 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             explanation = [`🔍 Step 1: Count small segments.`, `🧠 Step 2: Count larger ones.`, `🎯 Step 3: Total ${ans}.`]
             explanationVi = [`🔍 Bước 1: Đếm đoạn nhỏ.`, `🧠 Bước 2: Đếm đoạn lớn.`, `🎯 Bước 3: Tổng ${ans}.`]
         } else if (type === 'iso_blocks') {
-            const layout = [[1, 1, 0], [1, 1, 1], [0, 1, 1]]; let total = 0; layout.forEach(r => r.forEach(v => total += v))
-            prompt = `How many cubes are there?`; promptVi = `Có bao nhiêu khối lập phương?`
-            answer = String(total); options = numberOptions(total, [total + 1, total - 1, total + 3], 1, 30); visual = { type: 'iso_blocks', layout }
-            explanation = [`🔍 Step 1: Look at 3D.`, `🧠 Step 2: Count columns.`, `🎯 Step 3: ${total} blocks.`]
-            explanationVi = [`🔍 Bước 1: Nhìn 3D.`, `🧠 Bước 2: Đếm cột.`, `🎯 Bước 3: ${total} khối.`]
+            const spatial = generateSpatialQuestion()
+            prompt = spatial.prompt
+            promptVi = spatial.promptVi
+            audioText = spatial.audioText
+            answer = spatial.answer
+            options = spatial.options
+            explanation = spatial.explanation
+            explanationVi = spatial.explanationVi
+            visual = spatial.visual
+            vocab.push(...spatial.vocab)
         } else {
             prompt = `How many paths from red to green (only up and right)?`; promptVi = `Có bao nhiêu đường đi từ đỏ đến xanh (chỉ lên và phải)?`
             answer = '6'; options = numberOptions(6, [4, 5, 8], 1, 15); visual = { type: 'route_path', rows: 2, cols: 2 }
@@ -646,33 +654,54 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
     // 27. MAGIC SQUARE (Ma trận 3x3)
     // ==========================================
     else if (topic === 'magic_square') {
-        // Ma trận chuẩn tổng 15
-        // 2 7 6
-        // 9 5 1
-        // 4 3 8
-        const base = [[2, 7, 6], [9, 5, 1], [4, 3, 8]]
+        // 8 phép quay/đối xứng chuẩn của ma trận Lo Shu 3x3 (tổng = 15)
+        const baseSquares = [
+            [[2, 7, 6], [9, 5, 1], [4, 3, 8]],
+            [[4, 9, 2], [3, 5, 7], [8, 1, 6]],
+            [[8, 3, 4], [1, 5, 9], [6, 7, 2]],
+            [[6, 1, 8], [7, 5, 3], [2, 9, 4]],
+            [[8, 1, 6], [3, 5, 7], [4, 9, 2]],
+            [[6, 7, 2], [1, 5, 9], [8, 3, 4]],
+            [[2, 9, 4], [7, 5, 3], [6, 1, 8]],
+            [[4, 3, 8], [9, 5, 1], [2, 7, 6]]
+        ]
+        const base = baseSquares[randInt(0, baseSquares.length - 1)]
         const r = randInt(0, 2)
         const c = randInt(0, 2)
         const answerVal = base[r][c]
+        const magicSum = 15
+
+        // Các số đã biết trong hàng chứa ô thiếu
+        const rowKnown = base[r].filter((_, idx) => idx !== c)
+        const sumKnown = rowKnown[0] + rowKnown[1]
+        const completeRowIdx = r === 0 ? 1 : 0
+        const compRow = base[completeRowIdx]
 
         prompt = `In this magic square, the sum of each row, column, and diagonal is the same. What is the missing number?`
-        promptVi = `Trong ma trận kỳ diệu này, tổng các số ở mỗi hàng, cột và đường chéo đều bằng nhau. Số còn thiếu là gì?`
+        audioText = `In this magic square, what is the missing number?`
+        promptVi = `Trong ma trận kỳ diệu này, tổng các số ở mỗi hàng, cột và đường chéo đều bằng 15. Số còn thiếu là gì?`
         answer = String(answerVal)
-        options = numberOptions(answerVal, [1, 2, 3, 4, 6, 7, 8, 9].filter(n => n !== answerVal), 1, 9)
+        options = numberOptions(answerVal, [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(n => n !== answerVal), 1, 9)
 
         explanation = [
-            `🔍 Step 1: Look at a complete row or column to find the magic sum.`,
-            `🧠 Step 2: For example, ${base[0][0]} + ${base[0][1]} + ${base[0][2]} = 15.`,
-            `🎯 Step 3: Now use the sum to find the missing number in the row/col/diagonal: The answer is ${answerVal}.`
+            `🔍 Step 1: Check a complete row to find the magic sum: ${compRow[0]} + ${compRow[1]} + ${compRow[2]} = ${magicSum}.`,
+            `🧠 Step 2: In row ${r + 1}, the numbers are ${rowKnown[0]}, ?, and ${rowKnown[1]}. Their sum must be ${magicSum}: ${rowKnown[0]} + ? + ${rowKnown[1]} = ${magicSum}.`,
+            `🎯 Step 3: ${sumKnown} + ? = ${magicSum} ➔ ? = ${magicSum} - ${sumKnown} = ${answerVal}.`
         ]
         explanationVi = [
-            `🔍 Bước 1: Hãy nhìn vào một hàng hoặc cột đã đầy đủ để tìm tổng chung.`,
-            `🧠 Bước 2: Ví dụ: ${base[0][0]} + ${base[0][1]} + ${base[0][2]} = 15.`,
-            `🎯 Bước 3: Dùng tổng đó để tìm số còn thiếu ở hàng/cột/chéo chứa nó: Đáp án là ${answerVal}.`
+            `🔍 Bước 1: Xem hàng hoàn chỉnh để biết tổng ma trận: ${compRow[0]} + ${compRow[1]} + ${compRow[2]} = ${magicSum}.`,
+            `🧠 Bước 2: Ở hàng ${r + 1}, ta có ${rowKnown[0]}, ? và ${rowKnown[1]}. Tổng phải là ${magicSum}: ${rowKnown[0]} + ? + ${rowKnown[1]} = ${magicSum}.`,
+            `🎯 Bước 3: ${sumKnown} + ? = ${magicSum} ➔ ? = ${magicSum} - ${sumKnown} = ${answerVal}.`
         ]
 
-        // Cần thêm visual type mới, nhưng để đơn giản ta in ra dạng text grid
-        visual = { type: 'magic_square', data: { base, missingR: r, missingC: c } } as any
+        visual = {
+            type: 'magic_square',
+            grid: base,
+            missingR: r,
+            missingC: c,
+            magicSum: 15,
+            data: { base, missingR: r, missingC: c, magicSum: 15 }
+        }
     }
 
     // ==========================================
@@ -684,46 +713,52 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
 
         if (level <= 3) {
             prompt = `If you have ${c1} coin of 1¢ and ${c2} coins of 2¢, how many different total amounts can you make?`
-            promptVi = `Nếu có ${c1} đồng 1 xu và ${c2} đồng 2 xu, bạn có thể tạo ra bao nhiêu tổng số tiền khác nhau?`
-            answer = '7' // 0, 1, 2, 3, 4, 5, 6, 7, 8 -> Có 8 giá trị (bao gồm 0) -> Không tính 0 thì là 8. Wait, 2*1 + 3*2 = 8. Tổng số tổ hợp là (c1+1)*(c2+1) = 3*4 = 12. Nhưng có thể bị trùng. Hãy liệt kê.
-            // 0: 0
-            // 1: 1
-            // 2: 2 (or 1+1)
-            // 3: 1+2
-            // 4: 2+2
-            // 5: 1+2+2
-            // 6: 2+2+2
-            // 7: 1+1+2+2? Có 2 đồng 1, 3 đồng 2. Max là 2*1 + 3*2 = 8. 
-            // Các tổng có thể: 0, 1, 2, 3, 4, 5, 6, 7, 8 -> 9 giá trị.
-            // Đề bài hỏi "mua món hàng không thừa tiền" -> Số giá trị > 0. Là 8.
+            audioText = `How many different total amounts can you make?`
+            promptVi = `Nếu có ${c1} đồng 1 xu và ${c2} đồng 2 xu, bạn có thể tạo ra bao nhiêu tổng số tiền khác nhau (lớn hơn 0)?`
             answer = '8'
-            options = numberOptions(8, [7, 9, 5], 1, 15)
+            options = numberOptions(8, [6, 7, 9, 10], 1, 15)
             explanation = [
-                `🔍 Step 1: List the amounts you can make starting from 1.`,
-                `🧠 Step 2: 1, 2, 3, 4, 5, 6, 7, 8.`,
-                `🎯 Step 3: There are 8 different amounts.`
+                `🔍 Step 1: List the amounts you can make starting from 1¢.`,
+                `🧠 Step 2: 1¢, 2¢, 3¢ (1+2), 4¢ (2+2), 5¢ (1+2+2), 6¢ (2+2+2), 7¢ (1+1+2+2-wait, 1+2+2+2), 8¢ (1+1+2+2+2).`,
+                `🎯 Step 3: All amounts from 1 to 8 can be made, so there are 8 different amounts.`
             ]
             explanationVi = [
-                `🔍 Bước 1: Liệt kê các số tiền bắt đầu từ 1.`,
-                `🧠 Bước 2: 1, 2, 3, 4, 5, 6, 7, 8.`,
-                `🎯 Bước 3: Có 8 giá trị khác nhau.`
+                `🔍 Bước 1: Liệt kê các số tiền có thể tạo thành từ 1 xu.`,
+                `🧠 Bước 2: 1, 2, 3, 4, 5, 6, 7, 8 xu (tất cả các số từ 1 đến 8 đều ghép được).`,
+                `🎯 Bước 3: Có 8 giá trị tiền khác nhau có thể tạo thành.`
             ]
+            visual = {
+                type: 'coins',
+                coins: [
+                    { value: 1, count: c1, label: '1¢' },
+                    { value: 2, count: c2, label: '2¢' }
+                ]
+            }
         } else {
             // L4-L5: 1, 2, 5
             prompt = `You have ${c1} coin of 1¢, ${c2} coins of 2¢, and ${c3} coin of 5¢. How many different total amounts can you make (not including 0)?`
+            audioText = `How many different total amounts can you make?`
             promptVi = `Bạn có ${c1} đồng 1 xu, ${c2} đồng 2 xu và ${c3} đồng 5 xu. Có bao nhiêu tổng số tiền khác nhau có thể tạo ra (không tính 0)?`
-            answer = String(maxVal) // 2*1 + 3*2 + 1*5 = 2 + 6 + 5 = 13. Max là 13. Từ 1 đến 13 là 13 giá trị.
+            answer = String(maxVal)
             options = numberOptions(maxVal, [maxVal - 1, maxVal + 1, 10], 1, 20)
             explanation = [
                 `🔍 Step 1: Find the maximum amount: ${c1}×1 + ${c2}×2 + ${c3}×5 = ${maxVal}.`,
-                `🧠 Step 2: Because we have enough coins, we can make every amount from 1 to ${maxVal}.`,
+                `🧠 Step 2: Because we have small change (1¢ and 2¢), every integer amount from 1 to ${maxVal} can be formed.`,
                 `🎯 Step 3: So there are ${maxVal} different amounts.`
             ]
             explanationVi = [
                 `🔍 Bước 1: Tìm số tiền lớn nhất: ${c1}×1 + ${c2}×2 + ${c3}×5 = ${maxVal}.`,
-                `🧠 Bước 2: Vì có đủ tiền lẻ, ta có thể tạo mọi số tiền từ 1 đến ${maxVal}.`,
+                `🧠 Bước 2: Vì có đủ tiền lẻ (1¢ và 2¢), mọi số tiền nguyên từ 1 đến ${maxVal} đều tạo được.`,
                 `🎯 Bước 3: Vậy có ${maxVal} giá trị khác nhau.`
             ]
+            visual = {
+                type: 'coins',
+                coins: [
+                    { value: 1, count: c1, label: '1¢' },
+                    { value: 2, count: c2, label: '2¢' },
+                    { value: 5, count: c3, label: '5¢' }
+                ]
+            }
         }
         vocab.push('money')
     }
@@ -746,16 +781,24 @@ function shuffleNoAdjacent<T extends { topic: string }>(arr: T[]): T[] {
 }
 
 export function buildSession(level: EnglishLevel, count = ENGLISH_SESSION_SIZE): EnglishQuestion[] {
+    const base8Topics: EnglishTopic[] = ['number', 'addsub', 'muldiv', 'word', 'pattern', 'geometry', 'measure', 'logic']
     const allTopics: EnglishTopic[] = [
         'number', 'addsub', 'muldiv', 'word', 'pattern',
         'geometry', 'measure', 'logic', 'detective', 'elimination', 'algebra', 'cryptarithm', 'arithmetic_series',
         'position', 'age', 'sequence', 'day_calc', 'mult_principle', 'even_odd', 'permutation', 'fill_operators', 'distribution', 'pictograph', 'fibonacci', 'alternating_seq', 'balance_chain', 'magic_square', 'coin_combination'
     ]
 
-    const shuffledTopics = shuffle([...allTopics])
     const selectedTopics: EnglishTopic[] = []
-    const numDifferent = Math.min(count, allTopics.length)
-    for (let i = 0; i < numDifferent; i++) selectedTopics.push(shuffledTopics[i])
+    if (level <= 2) {
+        selectedTopics.push(...base8Topics)
+        while (selectedTopics.length < count) {
+            selectedTopics.push(pick(base8Topics))
+        }
+    } else {
+        const shuffledTopics = shuffle([...allTopics])
+        const numDifferent = Math.min(count, allTopics.length)
+        for (let i = 0; i < numDifferent; i++) selectedTopics.push(shuffledTopics[i])
+    }
 
     const questions: EnglishQuestion[] = []
     const seenPrompts = new Set<string>()

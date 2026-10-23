@@ -8,6 +8,12 @@ type Props = {
     onOpenProfile: () => void
 }
 
+const SECTION_IMAGES: Record<SectionType, string> = {
+    vietnamese: '/dao-so-hoc.png',
+    english: '/dao-kho-bau.png',
+    thinking: '/hang-quy-luat.png',
+}
+
 const SECTIONS: SectionType[] = ['vietnamese', 'english', 'thinking']
 
 export default function HomePage({ state, onSelectSection, onOpenProfile }: Props) {
@@ -20,44 +26,52 @@ export default function HomePage({ state, onSelectSection, onOpenProfile }: Prop
                     <span className="home-brand-icon">🧭</span>
                     <div>
                         <strong>Math Explorer</strong>
-                        <small>Khám phá toán học mỗi ngày</small>
+                        <small>Hành trình khám phá toán học</small>
                     </div>
                 </div>
                 <button className="home-profile-btn" onClick={onOpenProfile}>
-                    <span className="home-profile-avatar">🏴‍☠️</span>
                     <span className="home-profile-level">Cấp {level}</span>
+                    <span className="home-profile-xp">⭐ {state.xp} XP</span>
                     <span className="home-profile-gems">💎 {state.gems}</span>
                 </button>
             </header>
 
             <section className="home-hero">
-                <h1>Chọn môn học của con</h1>
-                <p>Ba hành trình — một mục tiêu: giỏi toán toàn diện!</p>
+                <h1>Khám Phá Thế Giới Toán Học</h1>
+                <p>Mỗi bài toán là một câu chuyện bằng hình ảnh — quan sát, suy luận và chinh phục đỉnh cao!</p>
             </section>
 
             <section className="home-cards">
                 {SECTIONS.map(section => {
                     const info = SECTION_INFO[section]
                     const percent = getSectionPercent(section, state)
+                    const bannerImg = SECTION_IMAGES[section]
+
                     return (
                         <button
                             key={section}
                             className={`home-section-card home-section-${section}`}
                             onClick={() => onSelectSection(section)}
                         >
-                            <div className="home-section-icon">{info.icon}</div>
-                            <h2 className="home-section-title">{info.title}</h2>
-                            <p className="home-section-desc">{info.description}</p>
-                            <div className="home-section-progress">
-                                <div className="home-section-progress-bar">
-                                    <div
-                                        className="home-section-progress-fill"
-                                        style={{ width: `${percent}%` }}
-                                    />
+                            {bannerImg && (
+                                <div className="home-card-banner">
+                                    <img src={bannerImg} alt={info.title} className="home-banner-img" />
                                 </div>
-                                <span className="home-section-percent">{percent}%</span>
+                            )}
+                            <div className="home-card-content">
+                                <h2 className="home-section-title">{info.title}</h2>
+                                <p className="home-section-desc">{info.description}</p>
+                                <div className="home-section-progress">
+                                    <div className="home-section-progress-bar">
+                                        <div
+                                            className="home-section-progress-fill"
+                                            style={{ width: `${percent}%` }}
+                                        />
+                                    </div>
+                                    <span className="home-section-percent">{percent}%</span>
+                                </div>
+                                <div className="home-section-cta">Khám phá ngay ➔</div>
                             </div>
-                            <div className="home-section-cta">Bắt đầu →</div>
                         </button>
                     )
                 })}

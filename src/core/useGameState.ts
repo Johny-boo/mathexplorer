@@ -41,7 +41,7 @@ export function useGameState() {
 
     const handleCorrectAnswer = useCallback((missionId: MissionId | null, difficulty: Difficulty, subSkill: SubSkillId) => {
         setState(prev => {
-            let newState = processCorrectAnswer(prev, difficulty, subSkill)
+            const newState = processCorrectAnswer(prev, difficulty, subSkill)
             if (missionId && missionId >= 1 && missionId <= 4) {
                 const currentMission = prev.missionProgress[missionId as 1 | 2 | 3 | 4]
                 newState.missionProgress = { ...prev.missionProgress, [missionId]: addStarXp(currentMission, difficulty, XP_PER_CORRECT) }
@@ -71,7 +71,7 @@ export function useGameState() {
             }
 
             const subSkill = `english.${topic}` as SubSkillId
-            let newState = processCorrectAnswer(prev, difficulty, subSkill)
+            const newState = processCorrectAnswer(prev, difficulty, subSkill)
             const currentLevelProgress = prev.englishProgress.levels[level]
             newState.englishProgress = {
                 ...prev.englishProgress,

@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import type { Difficulty, SubSkillId } from './core/types'
+import WordProblemVisualizer, { type WordProblemVisualData } from './components/WordProblemVisualizer'
 
 type Question = {
     story: string
     question: string
     answer: number
     hint: string[]
+    visualData?: WordProblemVisualData
 }
 
 type Round = {
@@ -57,7 +59,8 @@ const templates: Template[] = [
         return {
             story: `${c} nhặt được ${a} ${i} ở gốc cây. Sau đó ${c} nhặt thêm được ${b} ${i} nữa.`,
             question: `Hỏi ${c} có tất cả bao nhiêu ${i}?`, answer: a + b,
-            hint: [`Số ban đầu là ${a}, thêm vào ${b}.`, `Dùng phép CỘNG: ${a} + ${b} = ${a + b}.`]
+            hint: [`Số ban đầu là ${a}, thêm vào ${b}.`, `Dùng phép CỘNG: ${a} + ${b} = ${a + b}.`],
+            visualData: { generatorIndex: 0, char: c, item: i, a, b }
         }
     },
     // 2. Trừ cơ bản
@@ -67,7 +70,8 @@ const templates: Template[] = [
         return {
             story: `Trong tổ của ${c} có ${a} ${i}. ${c} đã mang ${b} ${i} đi tặng bạn.`,
             question: `Trong tổ còn lại bao nhiêu ${i}?`, answer: a - b,
-            hint: [`Ban đầu có ${a}, mang đi ${b}.`, `Dùng phép TRỪ: ${a} − ${b} = ${a - b}.`]
+            hint: [`Ban đầu có ${a}, mang đi ${b}.`, `Dùng phép TRỪ: ${a} − ${b} = ${a - b}.`],
+            visualData: { generatorIndex: 1, char: c, item: i, a, b }
         }
     },
     // 3. Nhân (chia đều nhóm)
@@ -76,7 +80,8 @@ const templates: Template[] = [
         return {
             story: `${c} có ${n} chiếc giỏ. Mỗi giỏ đựng ${m} ${i}.`,
             question: `Hỏi ${c} có tất cả bao nhiêu ${i}?`, answer: n * m,
-            hint: [`Có ${n} giỏ, mỗi giỏ ${m} ${i}.`, `Dùng phép NHÂN: ${n} × ${m} = ${n * m}.`]
+            hint: [`Có ${n} giỏ, mỗi giỏ ${m} ${i}.`, `Dùng phép NHÂN: ${n} × ${m} = ${n * m}.`],
+            visualData: { generatorIndex: 4, char: c, item: i, n, m, k: 0 }
         }
     },
     // 4. Chia đều
@@ -85,7 +90,8 @@ const templates: Template[] = [
         return {
             story: `${c} có ${total} ${i} chia đều vào ${n} chiếc giỏ.`,
             question: `Mỗi giỏ có bao nhiêu ${i}?`, answer: m,
-            hint: [`Chia đều ${total} thành ${n} phần.`, `Dùng phép CHIA: ${total} ÷ ${n} = ${m}.`]
+            hint: [`Chia đều ${total} thành ${n} phần.`, `Dùng phép CHIA: ${total} ÷ ${n} = ${m}.`],
+            visualData: { generatorIndex: 7, char: c, item: i, n, m: total, k: 0 }
         }
     },
     // 5. Nhân rồi cộng
@@ -94,7 +100,8 @@ const templates: Template[] = [
         return {
             story: `${c} có ${n} chiếc hộp, mỗi hộp chứa ${m} ${i}. Trên bàn còn thêm ${k} ${i} rời.`,
             question: `Hỏi tổng cộng có bao nhiêu ${i}?`, answer: n * m + k,
-            hint: [`Trong hộp: ${n} × ${m} = ${n * m}.`, `Cộng thêm ${k} rời: ${n * m} + ${k} = ${n * m + k}.`]
+            hint: [`Trong hộp: ${n} × ${m} = ${n * m}.`, `Cộng thêm ${k} rời: ${n * m} + ${k} = ${n * m + k}.`],
+            visualData: { generatorIndex: 4, char: c, item: i, n, m, k }
         }
     },
     // 6. Nhân rồi trừ
@@ -103,7 +110,8 @@ const templates: Template[] = [
         return {
             story: `${c} có ${n} đĩa, mỗi đĩa có ${m} ${i}. ${c} đã ăn mất ${k} ${i}.`,
             question: `Hỏi còn lại bao nhiêu ${i}?`, answer: n * m - k,
-            hint: [`Tổng ban đầu: ${n} × ${m} = ${n * m}.`, `Ăn mất ${k}: ${n * m} − ${k} = ${n * m - k}.`]
+            hint: [`Tổng ban đầu: ${n} × ${m} = ${n * m}.`, `Ăn mất ${k}: ${n * m} − ${k} = ${n * m - k}.`],
+            visualData: { generatorIndex: 5, char: c, item: i, n, m, k }
         }
     },
     // 7. Hai bước cộng trừ
@@ -113,7 +121,8 @@ const templates: Template[] = [
         return {
             story: `${char} có ${a} ${i}. Buổi sáng ${char} kiếm thêm ${b} ${i}, buổi chiều làm rơi mất ${c} ${i}.`,
             question: `Hỏi ${char} còn bao nhiêu ${i}?`, answer: a + b - c,
-            hint: [`Sáng có: ${a} + ${b} = ${a + b}.`, `Chiều mất: ${a + b} − ${c} = ${a + b - c}.`]
+            hint: [`Sáng có: ${a} + ${b} = ${a + b}.`, `Chiều mất: ${a + b} − ${c} = ${a + b - c}.`],
+            visualData: { generatorIndex: 2, char, item: i, a, b, c }
         }
     },
     // 8. So sánh (tìm phần hơn)
@@ -123,7 +132,8 @@ const templates: Template[] = [
         return {
             story: `${c1} có ${a} ${pick(ITEMS)}. ${c2} có ${b} ${pick(ITEMS)}.`,
             question: `${c1} có nhiều hơn ${c2} bao nhiêu?`, answer: a - b,
-            hint: [`Để biết phần hơn, ta lấy số lớn trừ số bé.`, `Đặt tính: ${a} − ${b} = ${a - b}.`]
+            hint: [`Để biết phần hơn, ta lấy số lớn trừ số bé.`, `Đặt tính: ${a} − ${b} = ${a - b}.`],
+            visualData: { generatorIndex: 8, char: c1, char2: c2, item: pick(ITEMS), a, b }
         }
     },
     // 9. Bài toán tuổi
@@ -132,7 +142,8 @@ const templates: Template[] = [
         return {
             story: `Năm nay mẹ ${momAge} tuổi, ${c} ${childAge} tuổi.`,
             question: `Mẹ hơn ${c} bao nhiêu tuổi?`, answer: momAge - childAge,
-            hint: [`Mẹ hơn con số tuổi là: ${momAge} − ${childAge} = ${momAge - childAge}.`]
+            hint: [`Mẹ hơn con số tuổi là: ${momAge} − ${childAge} = ${momAge - childAge}.`],
+            visualData: { generatorIndex: 8, char: 'Mẹ', char2: c, item: 'tuổi', a: momAge, b: momAge - childAge }
         }
     },
     // 10. Tính tiền cơ bản
@@ -141,7 +152,8 @@ const templates: Template[] = [
         return {
             story: `${c} mua ${n} món đồ chơi, mỗi món giá ${price} đồng. ${c} đưa cô bán hàng ${pay} đồng.`,
             question: `${c} được trả lại bao nhiêu tiền?`, answer: pay - (n * price),
-            hint: [`Tiền mua đồ: ${n} × ${price} = ${n * price}.`, `Tiền thừa: ${pay} − ${n * price} = ${pay - (n * price)}.`]
+            hint: [`Tiền mua đồ: ${n} × ${price} = ${n * price}.`, `Tiền thừa: ${pay} − ${n * price} = ${pay - (n * price)}.`],
+            visualData: { generatorIndex: 4, char: c, item: 'món đồ', n, m: price, k: 0 }
         }
     }
 ]
@@ -239,10 +251,13 @@ export default function WordProblem({ onBack, onCorrect, onWrong, startDifficult
         </div>
         </div>
         < div className = "word-story" >
-            <span aria-hidden="true" >🐿️</span>
                 < p > { question.story } </p>
-                </div>
-                < h2 > { question.question } </h2>
+        </div>
+
+        {/* Sơ đồ đoạn thẳng & minh họa bài toán trực quan */}
+        {question.visualData && <WordProblemVisualizer data={question.visualData} />}
+
+        < h2 > { question.question } </h2>
                 < div className = "word-options" >
                 {
                     options.map((option, index) => {

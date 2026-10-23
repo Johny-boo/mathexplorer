@@ -9,6 +9,15 @@ type Props = {
     onSelectModule: (id: ModuleId) => void
 }
 
+const MODULE_IMAGES: Record<string, string> = {
+    viet_number: '/dao-so-hoc.png',
+    viet_word: '/rung-phep-tinh.png',
+    viet_pattern: '/hang-quy-luat.png',
+    viet_geometry: '/nui-hinh-hoc.png',
+    viet_arena: '/thuyen-hai-tac.png',
+    viet_measure: '/dao-kho-bau.png',
+}
+
 export default function VietnameseMath({ state, onBack, onSelectModule }: Props) {
     const modules = SECTION_MODULES.vietnamese
 
@@ -20,7 +29,7 @@ export default function VietnameseMath({ state, onBack, onSelectModule }: Props)
                     <span className="section-icon">🧮</span>
                     <div>
                         <h1>Toán Tiếng Việt</h1>
-                        <p>Bám sát chương trình Bộ GD & Violympic</p>
+                        <p>Bám sát chương trình Bộ Giáo dục & Luyện thi Violympic</p>
                     </div>
                 </div>
             </header>
@@ -34,6 +43,7 @@ export default function VietnameseMath({ state, onBack, onSelectModule }: Props)
                         ? calculateStars(state.missionProgress[missionId])
                         : (moduleId === 'viet_arena' ? Math.min(5, state.bossWins) : 0)
                     const isPlaceholder = info.placeholder
+                    const cardImg = MODULE_IMAGES[moduleId]
 
                     return (
                         <button
@@ -42,7 +52,11 @@ export default function VietnameseMath({ state, onBack, onSelectModule }: Props)
                             onClick={() => !isPlaceholder && onSelectModule(moduleId)}
                             disabled={isPlaceholder}
                         >
-                            <div className="module-card-icon">{info.icon}</div>
+                            {cardImg && (
+                                <div className="module-card-img-wrapper">
+                                    <img src={cardImg} alt={info.title} className="module-card-img" />
+                                </div>
+                            )}
                             <h3 className="module-card-title">{info.title}</h3>
                             <p className="module-card-desc">{info.description}</p>
 

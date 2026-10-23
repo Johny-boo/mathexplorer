@@ -95,16 +95,16 @@ export function createQuestion(difficulty: Difficulty): GeometryQuestion {
     else if (type === 'RealLife') {
         subSkill = 'geometry.identify'
         const items = [
-            { emoji: '🕰️', shape: 'Hình tròn', pool: ['Hình tròn', 'Hình vuông', 'Hình tam giác', 'Hình chữ nhật'] },
-            { emoji: '📕', shape: 'Hình chữ nhật', pool: ['Hình tròn', 'Hình vuông', 'Hình tam giác', 'Hình chữ nhật'] },
-            { emoji: '🍕', shape: 'Hình tam giác', pool: ['Hình tròn', 'Hình vuông', 'Hình tam giác', 'Hình chữ nhật'] },
-            { emoji: '🎲', shape: 'Hình vuông', pool: ['Hình tròn', 'Hình vuông', 'Hình tam giác', 'Hình chữ nhật'] },
+            { label: 'Đồng hồ (Mặt tròn)', shape: 'Hình tròn' },
+            { label: 'Quyển sách (Mặt chữ nhật)', shape: 'Hình chữ nhật' },
+            { label: 'Miếng pizza (Mặt tam giác)', shape: 'Hình tam giác' },
+            { label: 'Viên xúc xắc (Mặt vuông)', shape: 'Hình vuông' },
         ]
         const target = pick(items)
-        prompt = `Vật nào sau đây có dạng ${target.shape}?`
-        answer = target.emoji
-        options = generateStringOptions(answer, items.map(i => i.emoji))
-        explanation = `${target.emoji} có dạng ${target.shape}.`
+        prompt = `Vật nào trong hình có dạng ${target.shape}?`
+        answer = target.label
+        options = generateStringOptions(answer, items.map(i => i.label))
+        explanation = `${target.label} có bề mặt dạng ${target.shape}.`
         visualType = 'real-life'
         visualData = 'all'
     }
@@ -230,19 +230,92 @@ function ShapeVisual({ type, data }: { type?: string, data?: any }) {
 
     if (type === 'real-life') {
         return (
-            <div className= "geo-svg-container" style = {{ flexDirection: 'column' }
-    }>
-        <div style={ { fontSize: '80px', marginBottom: '16px' } }>🕰️ 📕 🍕 🎲</div>
+            <div className="geo-real-life-grid">
+                <div className="real-life-card">
+                    <svg viewBox="0 0 80 80" width="70" height="70">
+                        <circle cx="40" cy="40" r="34" fill="#eff6ff" stroke="#2563eb" strokeWidth="4" />
+                        <line x1="40" y1="40" x2="40" y2="18" stroke="#ef4444" strokeWidth="3" strokeLinecap="round" />
+                        <line x1="40" y1="40" x2="56" y2="40" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
+                        <circle cx="40" cy="40" r="4" fill="#1e293b" />
+                    </svg>
+                    <span className="real-life-label">Đồng hồ (Mặt tròn)</span>
+                </div>
+                <div className="real-life-card">
+                    <svg viewBox="0 0 80 80" width="70" height="70">
+                        <rect x="15" y="12" width="50" height="56" rx="4" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="3" />
+                        <rect x="22" y="16" width="38" height="48" fill="#ffffff" />
+                        <line x1="28" y1="26" x2="52" y2="26" stroke="#94a3b8" strokeWidth="2" />
+                        <line x1="28" y1="36" x2="52" y2="36" stroke="#94a3b8" strokeWidth="2" />
+                        <line x1="28" y1="46" x2="44" y2="46" stroke="#94a3b8" strokeWidth="2" />
+                    </svg>
+                    <span className="real-life-label">Quyển sách (Mặt chữ nhật)</span>
+                </div>
+                <div className="real-life-card">
+                    <svg viewBox="0 0 80 80" width="70" height="70">
+                        <polygon points="40,12 70,66 10,66" fill="#fbbf24" stroke="#d97706" strokeWidth="3" />
+                        <path d="M 10 66 Q 40 76 70 66" fill="#b45309" stroke="#78350f" strokeWidth="3" />
+                        <circle cx="36" cy="42" r="4" fill="#dc2626" />
+                        <circle cx="48" cy="52" r="4" fill="#dc2626" />
+                        <circle cx="28" cy="54" r="4" fill="#dc2626" />
+                    </svg>
+                    <span className="real-life-label">Miếng pizza (Mặt tam giác)</span>
+                </div>
+                <div className="real-life-card">
+                    <svg viewBox="0 0 80 80" width="70" height="70">
+                        <rect x="14" y="14" width="52" height="52" rx="8" fill="#f8fafc" stroke="#334155" strokeWidth="3.5" />
+                        <circle cx="26" cy="26" r="3.5" fill="#ef4444" />
+                        <circle cx="54" cy="26" r="3.5" fill="#ef4444" />
+                        <circle cx="40" cy="40" r="3.5" fill="#ef4444" />
+                        <circle cx="26" cy="54" r="3.5" fill="#ef4444" />
+                        <circle cx="54" cy="54" r="3.5" fill="#ef4444" />
+                    </svg>
+                    <span className="real-life-label">Viên xúc xắc (Mặt vuông)</span>
+                </div>
             </div>
         )
-}
+    }
 
-if (type === '3d') {
-    return (
-        <div className= "geo-svg-container" style = {{ flexDirection: 'column' }
-}>
-    <div style={ { fontSize: '80px', marginBottom: '16px' } }>🧊 ⚽ 🥫</div>
-        </div>
+    if (type === '3d') {
+        return (
+            <div className="geo-3d-grid">
+                <div className="shape-3d-card">
+                    <svg viewBox="0 0 100 100" width="80" height="80">
+                        <polygon points="50,15 85,32 50,50 15,32" fill="#93c5fd" stroke="#1e3a8a" strokeWidth="2.5" />
+                        <polygon points="15,32 50,50 50,85 15,67" fill="#60a5fa" stroke="#1e3a8a" strokeWidth="2.5" />
+                        <polygon points="85,32 50,50 50,85 85,67" fill="#3b82f6" stroke="#1e3a8a" strokeWidth="2.5" />
+                    </svg>
+                    <span className="shape-3d-label">Khối lập phương</span>
+                </div>
+                <div className="shape-3d-card">
+                    <svg viewBox="0 0 100 100" width="80" height="80">
+                        <defs>
+                            <radialGradient id="sphereGradGeo" cx="35%" cy="35%" r="65%">
+                                <stop offset="0%" stopColor="#fecaca" />
+                                <stop offset="40%" stopColor="#ef4444" />
+                                <stop offset="100%" stopColor="#991b1b" />
+                            </radialGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="36" fill="url(#sphereGradGeo)" stroke="#7f1d1d" strokeWidth="2.5" />
+                        <ellipse cx="40" cy="35" rx="8" ry="5" fill="#ffffff" opacity="0.5" transform="rotate(-30 40 35)" />
+                    </svg>
+                    <span className="shape-3d-label">Khối cầu</span>
+                </div>
+                <div className="shape-3d-card">
+                    <svg viewBox="0 0 100 100" width="80" height="80">
+                        <defs>
+                            <linearGradient id="cylBodyGeo" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stopColor="#34d399" />
+                                <stop offset="50%" stopColor="#a7f3d0" />
+                                <stop offset="100%" stopColor="#059669" />
+                            </linearGradient>
+                        </defs>
+                        <path d="M 24 32 L 24 68 A 26 10 0 0 0 76 68 L 76 32 Z" fill="url(#cylBodyGeo)" stroke="#065f46" strokeWidth="2.5" />
+                        <ellipse cx="50" cy="68" rx="26" ry="10" fill="none" stroke="#065f46" strokeWidth="1.5" strokeDasharray="3,3" />
+                        <ellipse cx="50" cy="32" rx="26" ry="10" fill="#6ee7b7" stroke="#065f46" strokeWidth="2.5" />
+                    </svg>
+                    <span className="shape-3d-label">Khối trụ</span>
+                </div>
+            </div>
         )
     }
 

@@ -90,7 +90,7 @@ export function createQuestion(difficulty: Difficulty): PatternQuestion {
     ]
     const type = pick(types)
 
-    let prompt = 'Điền vào dấu ?'
+    const prompt = 'Điền vào dấu ?'
     let options: string[] = []
     let answer = ''
     let explanation = ''

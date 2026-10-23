@@ -19,6 +19,8 @@ import Thermometer from './components/Thermometer'
 import PeopleLine from './components/PeopleLine'
 import GeometrySVG from './components/GeometrySVG'
 import Calendar from './components/Calendar'
+import MagicSquare from './components/MagicSquare'
+import CoinVisual from './components/CoinVisual'
 
 export type EnglishAnswerResult = {
     level: EnglishLevel
@@ -436,6 +438,12 @@ export default function EnglishMath({ onBack, progress, onAnswer, onVocabTap, on
                     )}
                     {q.visual && q.visual.type === 'calendar' && (
                         <Calendar monthName={q.visual.monthName} startDay={q.visual.startDay} daysInMonth={q.visual.daysInMonth} eventDay={q.visual.eventDay} />
+                    )}
+                    {q.visual && q.visual.type === 'magic_square' && (
+                        <MagicSquare visual={q.visual} />
+                    )}
+                    {q.visual && q.visual.type === 'coins' && (
+                        <CoinVisual visual={q.visual} />
                     )}
 
                     {!isMockTest && (

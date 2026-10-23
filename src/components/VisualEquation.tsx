@@ -4,35 +4,56 @@ type Props = {
 
 export default function VisualEquation({ lines }: Props) {
     return (
-        <div style= {{
-        display: 'flex',
-            flexDirection: 'column',
-                alignItems: 'center',
-                    gap: '12px',
-                        margin: '30px 0',
-                            background: '#ffffff',
-                                padding: '24px',
-                                    borderRadius: '24px',
-                                        border: '3px dashed #38bdf8',
-                                            boxShadow: '0 4px 10px rgba(0,0,0,0.05)'
-    }
-}>
-{
-    lines.map((line, idx) => (
-        <div key= { idx } style = {{
-        fontSize: '32px',
-        fontWeight: 'bold',
-        color: '#0f172a',
-        letterSpacing: '4px',
-        background: '#f0f9ff',
-        padding: '8px 24px',
-        borderRadius: '16px',
-        width: '100%',
-        textAlign: 'center'
-    }} >
-{ line }
-    </div>
-            ))}
-</div>
+        <div className="visual-equation-container">
+            <div className="equation-header-badge">Hệ phương trình hình ảnh (Toán tư duy)</div>
+            <div className="equation-cards-list">
+                {lines.map((line, idx) => {
+                    // Tách các phần tử theo khoảng trắng
+                    const parts = line.split(' ')
+
+                    return (
+                        <div key={idx} className="equation-line-card">
+                            <div className="equation-line-number">Dòng {idx + 1}</div>
+                            <div className="equation-tokens-row">
+                                {parts.map((part, pIdx) => {
+                                    const isOperator = ['+', '−', '-', '×', '*', '÷', '/', '='].includes(part)
+                                    const isNumber = !isNaN(Number(part))
+                                    const isQuestion = part === '?'
+
+                                    if (isOperator) {
+                                        return (
+                                            <span key={pIdx} className="equation-operator">
+                                                {part === '*' ? '×' : part === '-' ? '−' : part}
+                                            </span>
+                                        )
+                                    }
+                                    if (isQuestion) {
+                                        return (
+                                            <span key={pIdx} className="equation-question-box">
+                                                ?
+                                            </span>
+                                        )
+                                    }
+                                    if (isNumber) {
+                                        return (
+                                            <span key={pIdx} className="equation-number-badge">
+                                                {part}
+                                            </span>
+                                        )
+                                    }
+
+                                    // Biểu tượng hoặc đồ vật hình ảnh
+                                    return (
+                                        <span key={pIdx} className="equation-item-token">
+                                            {part}
+                                        </span>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        </div>
     )
 }

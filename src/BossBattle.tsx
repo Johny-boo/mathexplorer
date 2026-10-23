@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { Difficulty, SubSkillId, BossQuestion } from './core/types'
 import { BOSS_QUESTION_COUNT, BOSS_PASS_XP, MATH_TIME_BY_TIER } from './core/constants'
 import { createMathQ } from './core/mathQuestions'
+import MathVisualizer from './components/MathVisualizer'
 
 type Props = {
     onBack: () => void
@@ -108,11 +109,13 @@ export default function BossBattle({ onBack, onWin, onLose, onCorrect, onWrong }
 
             <div className="boss-container">
                 <div className="boss-header">
-                    <span className="boss-avatar">👹</span>
-                    <h2>TRẬN CHIẾN CUỐI CÙNG</h2>
+                    <img src="/thuyen-hai-tac.png" alt="Thuyền Hải Tặc" className="boss-header-ship" />
+                    <h2>ĐẤU TRƯỜNG THUYỀN TRƯỞNG BÓNG ĐÊM</h2>
                 </div>
 
                 <div className="boss-question-card">
+                    {/* Minh họa mô hình toán học */}
+                    {q.visualData && <MathVisualizer data={q.visualData} />}
                     <h1 className="boss-prompt">{q.prompt}</h1>
 
                     <div className="boss-options-grid">
