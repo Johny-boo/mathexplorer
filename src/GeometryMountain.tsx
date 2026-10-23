@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { Difficulty, SubSkillId } from './core/types'
 
 type Props = {
@@ -211,7 +211,7 @@ function ShapeVisual({ type, data }: { type?: string, data?: any }) {
     if (!type) return null;
 
     if (type === 'identify') {
-        const shapes: Record<string, JSX.Element> = {
+        const shapes: Record<string, ReactNode> = {
             'Hình tam giác': <polygon points="50,5 95,95 5,95" fill = "#fbbf24" stroke="#b45309" strokeWidth="3" />,
             'Hình vuông': <rect x="10" y = "10" width="80" height="80" fill="#60a5fa" stroke="#1e3a8a" strokeWidth="3" />,
             'Hình tròn': <circle cx="50" cy = "50" r="45" fill="#f87171" stroke="#7f1d1d" strokeWidth="3" />,
@@ -318,7 +318,7 @@ if (type === 'symmetry') {
 
 if (type === 'sticks') {
     const n = data as number;
-    const sticks: JSX.Element[] = [];
+    const sticks: ReactNode[] = [];
     const size = 40;
     const paddingX = 20;
     const paddingY = 20;

@@ -1,0 +1,8 @@
+{
+  "name": "Math Explorer",
+  "description": "An interactive math learning adventure featuring Vietnamese Math, English Math, and Thinking Math challenges for kids.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

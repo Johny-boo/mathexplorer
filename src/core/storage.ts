@@ -1,4 +1,7 @@
-import type { GlobalState, Rank } from './types'
+import type {
+    GlobalState, Rank, MissionProgressMap, ThinkingProgress,
+    EnglishProgress, GlobalStats, RankProgress, CelebratedStarsMap
+} from './types'
 import { STORAGE_VERSION, createDefaultGlobalState, INITIAL_GEMS } from './constants'
 
 const key = (name: string) => `mathExplorer${name}_${STORAGE_VERSION}`
@@ -18,9 +21,9 @@ export function loadGlobalState(): GlobalState {
         const gems = safeNumber(localStorage.getItem(key('Gems')), INITIAL_GEMS)
         const bossWins = safeNumber(localStorage.getItem(key('BossWins')), 0)
 
-        const missionProgress = safeParse(localStorage.getItem(key('MissionProgress'))) ?? defaults.missionProgress
-        const thinkingProgress = safeParse(localStorage.getItem(key('ThinkingProgress'))) ?? defaults.thinkingProgress
-        const englishProgress = safeParse(localStorage.getItem(key('EnglishProgress'))) ?? defaults.englishProgress
+        const missionProgress = safeParse<MissionProgressMap>(localStorage.getItem(key('MissionProgress'))) ?? defaults.missionProgress
+        const thinkingProgress = safeParse<ThinkingProgress>(localStorage.getItem(key('ThinkingProgress'))) ?? defaults.thinkingProgress
+        const englishProgress = safeParse<EnglishProgress>(localStorage.getItem(key('EnglishProgress'))) ?? defaults.englishProgress
 
         const savedSkills = safeParse<any>(localStorage.getItem(key('SkillStats'))) || {}
         const skillStats = { ...defaults.skillStats, ...savedSkills }
@@ -28,11 +31,11 @@ export function loadGlobalState(): GlobalState {
         const savedSubSkills = safeParse<any>(localStorage.getItem(key('SubSkillStats'))) || {}
         const subSkillStats = { ...defaults.subSkillStats, ...savedSubSkills }
 
-        const globalStats = safeParse(localStorage.getItem(key('GlobalStats'))) ?? defaults.globalStats
-        const rankProgress = safeParse(localStorage.getItem(key('RankProgress'))) ?? defaults.rankProgress
+        const globalStats = safeParse<GlobalStats>(localStorage.getItem(key('GlobalStats'))) ?? defaults.globalStats
+        const rankProgress = safeParse<RankProgress>(localStorage.getItem(key('RankProgress'))) ?? defaults.rankProgress
         const currentRank = (localStorage.getItem(key('Rank')) as Rank) || 'explorer'
         const lastActiveDate = localStorage.getItem(key('LastActiveDate')) || new Date().toISOString().split('T')[0]
-        const celebratedStars = safeParse<any>(localStorage.getItem(key('CelebratedStars'))) ?? {}
+        const celebratedStars = safeParse<CelebratedStarsMap>(localStorage.getItem(key('CelebratedStars'))) ?? {}
 
         return {
             xp, gems, missionProgress, bossWins, thinkingProgress, englishProgress,

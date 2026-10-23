@@ -56,7 +56,7 @@ export function useGameState() {
         topic: EnglishTopic,
         correct: boolean,
         _meta: AnswerMeta,
-        vocabIds?: string[] // <-- THÊM THAM SỐ THỨ 6
+        _vocabIds?: string[] // <-- THÊM THAM SỐ THỨ 6
     ) => {
         setState(prev => {
             if (!correct) {
@@ -81,7 +81,7 @@ export function useGameState() {
         })
     }, [])
 
-    const handleWrongAnswer = useCallback((difficulty: Difficulty, subSkill: SubSkillId) => {
+    const handleWrongAnswer = useCallback((_difficulty: Difficulty, subSkill: SubSkillId) => {
         setState(prev => {
             const newState = { ...prev }
             newState.globalStats = { ...prev.globalStats, totalAnswered: prev.globalStats.totalAnswered + 1 }

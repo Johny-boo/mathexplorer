@@ -17,7 +17,7 @@ export type SubSkillId =
     | 'word.addsub' | 'word.muldiv' | 'word.multistep' | 'word.divideadd'
     | 'pattern.ab' | 'pattern.abc' | 'pattern.step'
     | 'pattern.mulstep' | 'pattern.increasing' | 'pattern.interleave'
-    | 'pattern.geometry'
+    | 'pattern.geometry' | 'pattern.matrix'
     | 'geometry.identify' | 'geometry.edges' | 'geometry.count'
     | 'geometry.symmetry' | 'geometry.sticks'
     | 'thinking.pattern' | 'thinking.logic' | 'thinking.space'

@@ -98,7 +98,7 @@ const templates: Template[] = [
         }
     },
     // 6. Nhân rồi trừ
-    (diff) => {
+    () => {
         const n = randInt(3, 5), m = randInt(4, 6), k = randInt(5, n * m - 2), c = pick(CHARS), i = pick(ITEMS)
         return {
             story: `${c} có ${n} đĩa, mỗi đĩa có ${m} ${i}. ${c} đã ăn mất ${k} ${i}.`,

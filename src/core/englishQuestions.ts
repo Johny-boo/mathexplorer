@@ -113,14 +113,14 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             const a = randInt(15, 50), b = randInt(5, 15)
             prompt = `${p.en} has ${noun(a, item)}. ${pr.subj} gets ${b} more. How many now?`
             promptVi = `${p.vi} có ${a} ${item.viNoun}. Được thêm ${b} cái. Hỏi bây giờ có bao nhiêu?`
-            answer = String(a + b); options = numberOptions(answer, [a - b, answer + 10], 0, 100)
+            const ansNum = a + b; answer = String(ansNum); options = numberOptions(ansNum, [a - b, ansNum + 10], 0, 100)
             explanation = [`🔍 Step 1: "Gets more" means addition.`, `🧠 Step 2: ${a} + ${b}.`, `🎯 Step 3: ${a + b}.`]
             explanationVi = [`🔍 Bước 1: "Được thêm" là phép cộng.`, `🧠 Bước 2: ${a} + ${b}.`, `🎯 Bước 3: ${a + b}.`]
         } else if (level === 3) {
             const a = randInt(50, 90), b = randInt(10, 20), c = randInt(5, 15)
             prompt = `${p.en} has ${noun(a, item)}. ${pr.subj} buys ${b} more, then gives ${c} to a friend. How many now?`
             promptVi = `${p.vi} có ${a} ${item.viNoun}. Mua thêm ${b}, rồi cho bạn ${c}. Hỏi còn bao nhiêu?`
-            answer = String(a + b - c); options = numberOptions(answer, [a + b + c, a - b + c, answer + 5], 0, 150)
+            const ansNum = a + b - c; answer = String(ansNum); options = numberOptions(ansNum, [a + b + c, a - b + c, ansNum + 5], 0, 150)
             explanation = [`🔍 Step 1: First find the total after buying.`, `🧠 Step 2: ${a} + ${b} = ${a + b}.`, `🎯 Step 3: Subtract given away: ${a + b} - ${c} = ${answer}.`]
             explanationVi = [`🔍 Bước 1: Tìm tổng sau khi mua.`, `🧠 Bước 2: ${a} + ${b} = ${a + b}.`, `🎯 Bước 3: Trừ đi số đã cho: ${a + b} - ${c} = ${answer}.`]
         } else if (level === 4) {
@@ -136,7 +136,7 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             const a = randInt(60, 100), b = randInt(20, 40), c = randInt(10, 25)
             prompt = `${p.en} has ${noun(a, item)} and some ${extraItem.pl}. ${pr.subj} buys ${b} more ${item.pl}, then gives ${c} to a brother. How many ${item.pl} now?`
             promptVi = `${p.vi} có ${a} ${item.viNoun} và một ít ${extraItem.viNoun}. Mua thêm ${b} ${item.viNoun}, cho em ${c} cái. Hỏi còn bao nhiêu?`
-            answer = String(a + b - c); options = numberOptions(answer, [a + b + c, a - b + c, answer + 10], 0, 200)
+            const ansNum = a + b - c; answer = String(ansNum); options = numberOptions(ansNum, [a + b + c, a - b + c, ansNum + 10], 0, 200)
             explanation = [`🔍 Step 1: Only count ${item.pl}. ${extraItem.pl} is extra info.`, `🧠 Step 2: ${a} + ${b} = ${a + b}.`, `🎯 Step 3: ${a + b} - ${c} = ${answer}.`]
             explanationVi = [`🔍 Bước 1: Chỉ đếm ${item.viNoun}. ${extraItem.viNoun} là dữ kiện thừa.`, `🧠 Step 2: ${a} + ${b} = ${a + b}.`, `🎯 Step 3: ${a + b} - ${c} = ${answer}.`]
         }
@@ -230,7 +230,7 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             explanation = [`🔍 Step 1: Find date ${eventDay}.`, `🧠 Step 2: Look at the column.`, `🎯 Step 3: It is ${answer}.`]
             explanationVi = [`🔍 Bước 1: Tìm ngày ${eventDay}.`, `🧠 Bước 2: Nhìn cột.`, `🎯 Bước 3: Là ${answer}.`]
         } else {
-            const hour = randInt(1, 12), minute = pick([0, 30])
+            const hour = randInt(1, 12), minute: 0 | 30 = pick([0, 30] as const)
             prompt = `What time is it?`; promptVi = `Bây giờ là mấy giờ?`
             answer = `${hour}:${minute === 0 ? '00' : '30'}`; options = timeOptions(hour, minute); visual = { type: 'clock', hour, minute }
             explanation = [`🔍 Step 1: Short hand = hour (${hour}).`, `🧠 Step 2: Long hand = minutes.`, `🎯 Step 3: ${answer}.`]
@@ -332,7 +332,7 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
             explanationVi = [`🔍 Bước 1: Dùng phép ngược.`, `🧠 Bước 2: ${isAdd ? 'Trừ' : 'Cộng'}.`, `🎯 Bước 3: ${letter} = ${ans}.`]
         } else if (level <= 4) {
             let ans = 0, mult = 0, tens = 0; while (true) { ans = randInt(2, 9); mult = randInt(3, 9); const prod = ans * mult; if (prod % 10 === ans && prod > 10) { tens = Math.floor(prod / 10); break } }
-            const total = ans * mult; prompt = `Find ${letter}: ${letter} × ${mult} = ${tens}${letter}`; promptVi = `Tìm ${letter}: ${letter} × ${mult} = ${tens}${letter}`
+            prompt = `Find ${letter}: ${letter} × ${mult} = ${tens}${letter}`; promptVi = `Tìm ${letter}: ${letter} × ${mult} = ${tens}${letter}`
             answer = String(ans); options = numberOptions(ans, [ans + 1, ans - 1, tens], 1, 9)
             explanation = [`🔍 Step 1: Look at ones digit.`, `🧠 Step 2: ${letter} × ${mult} ends in ${letter}.`, `🎯 Step 3: ${letter} = ${ans}.`]
             explanationVi = [`🔍 Bước 1: Nhìn hàng đơn vị.`, `🧠 Bước 2: ${letter} × ${mult} tận cùng là ${letter}.`, `🎯 Bước 3: ${letter} = ${ans}.`]
@@ -482,7 +482,6 @@ export function generateQuestion(level: EnglishLevel, topic: EnglishTopic): Engl
     // 21. FILL OPERATORS (P2)
     else if (topic === 'fill_operators') {
         const a = randInt(2, 9), b = randInt(2, 9), c = randInt(2, 9)
-        const ansStr = `${a} + ${b} × ${c}`
         const ansVal = a + b * c
         prompt = `Which operators make this true? ${a} _ ${b} _ ${c} = ${ansVal}`; promptVi = `Điền dấu nào để đúng? ${a} _ ${b} _ ${c} = ${ansVal}`
         answer = '+ and ×'; options = ['+ and +', '+ and ×', '× and +', '− and ×']

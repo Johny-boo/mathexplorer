@@ -1,4 +1,4 @@
-import type { GlobalState, ModuleId, EnglishLevel } from '../core/types'
+import type { GlobalState, ModuleId } from '../core/types'
 import { MODULE_INFO, SECTION_MODULES } from '../core/constants'
 import { getModulePercent, MODULE_TO_ENG_LEVEL } from '../core/moduleProgress'
 import { calculateEnglishStars } from '../core/starSystem'

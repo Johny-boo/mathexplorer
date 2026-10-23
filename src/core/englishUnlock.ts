@@ -1,6 +1,4 @@
 import type { EnglishLevel, EnglishProgress } from './types'
-import { calculateEnglishStars } from './starSystem'
-import { VOCABULARY_BANK } from './vocabulary'
 
 // TẠM THỜI MỞ KHÓA TẤT CẢ CÁC LEVEL
 export const MAX_PLAYABLE_LEVEL: EnglishLevel = 5
@@ -10,7 +8,7 @@ export type LevelStatus =
     | { state: 'locked'; reason: string }
     | { state: 'soon' }
 
-export function getLevelStatus(level: EnglishLevel, p: EnglishProgress): LevelStatus {
+export function getLevelStatus(_level: EnglishLevel, _p: EnglishProgress): LevelStatus {
     // ==========================================
     // TẠM THỜI MỞ KHÓA ĐỂ TEST (Xóa dòng này khi muốn bật lại quy tắc)
     return { state: 'open' }

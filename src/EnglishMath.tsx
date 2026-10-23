@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import type { EnglishLevel, EnglishTopic, EnglishProgress, EnglishQuestion } from './core/types'
 import {
-    ENGLISH_LEVEL_TO_DIFFICULTY,
     ENGLISH_TIME_BY_LEVEL,
     ENGLISH_TOPIC_BADGE,
     ENGLISH_SESSION_SIZE,

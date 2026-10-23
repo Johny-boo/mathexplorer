@@ -33,7 +33,9 @@ export const ENGLISH_TOPIC_BADGE: Record<EnglishTopic, string> = {
     arithmetic_series: '➕ Tổng dãy số',
     position: '📍 Xếp hàng', age: '🎂 Tuổi tác', sequence: '🔢 Dãy số',
     day_calc: '📅 Thứ/Ngày', mult_principle: '🛣️ Quy tắc nhân', even_odd: '⚖️ Chẵn lẻ',
-    permutation: '🎲 Lập số', fill_operators: '✏️ Điền dấu', distribution: '🎁 Chia đều', pictograph: '📊 Biểu đồ'
+    permutation: '🎲 Lập số', fill_operators: '✏️ Điền dấu', distribution: '🎁 Chia đều', pictograph: '📊 Biểu đồ',
+    fibonacci: '🐚 Fibonacci', alternating_seq: '⏩ Dãy xen kẽ', balance_chain: '⚖️ Cân chuỗi',
+    magic_square: '🔮 Ma trận', coin_combination: '🪙 Tổ hợp xu'
 }
 
 export const THINKING_LESSONS_TOTAL = 15
@@ -57,31 +59,19 @@ export const SKILL_INFO: Record<SkillId, { icon: string; label: string }> = {
 export const SUB_SKILL_LABELS: Record<SubSkillId, string> = {
     'math.add': 'Cộng', 'math.sub': 'Trừ', 'math.mul': 'Nhân',
     'word.addsub': 'Cộng trừ đơn', 'word.muldiv': 'Nhân chia', 'word.multistep': 'Đa bước', 'word.divideadd': 'Chia đều + thêm',
-    'pattern.ab': 'Lặp AB', 'pattern.abc': 'Lặp ABC', 'pattern.step': 'Cộng/trừ đều', 'pattern.mulstep': 'Nhân/chia đều', 'pattern.increasing': 'Tăng dần', 'pattern.interleave': 'Xen kẽ', 'pattern.geometry': 'Quy luật hình học',
+    'pattern.ab': 'Lặp AB', 'pattern.abc': 'Lặp ABC', 'pattern.step': 'Cộng/trừ đều', 'pattern.mulstep': 'Nhân/chia đều', 'pattern.increasing': 'Tăng dần', 'pattern.interleave': 'Xen kẽ', 'pattern.geometry': 'Quy luật hình học', 'pattern.matrix': 'Ma trận quy luật',
     'geometry.identify': 'Nhận diện hình', 'geometry.edges': 'Đếm cạnh/đỉnh', 'geometry.count': 'Đếm hình', 'geometry.symmetry': 'Đối xứng', 'geometry.sticks': 'Que tính',
     'thinking.pattern': 'Quy luật & dãy số', 'thinking.logic': 'Logic & suy luận', 'thinking.space': 'Hình học không gian', 'thinking.riddle': 'Bài toán đố', 'thinking.mixed': 'Tổng hợp',
     'english.number': 'Số & Đọc số', 'english.addsub': 'Cộng & Trừ', 'english.muldiv': 'Nhân & Chia', 'english.word': 'Bài toán có lời văn', 'english.pattern': 'Quy luật', 'english.geometry': 'Hình học', 'english.measure': 'Đo lường & Thời gian', 'english.logic': 'Logic & Dữ liệu',
     'english.detective': 'Thám tử số', 'english.elimination': 'Loại trừ logic', 'english.algebra': 'Đại số hình ảnh', 'english.cryptarithm': 'Mã hóa số', 'english.arithmetic_series': 'Tính tổng dãy số',
     'english.position': 'Bài toán xếp hàng', 'english.age': 'Bài toán tuổi', 'english.sequence': 'Dãy số cách đều',
     'english.day_calc': 'Tính thứ/ngày', 'english.mult_principle': 'Quy tắc nhân', 'english.even_odd': 'Chẵn lẻ',
-    'english.permutation': 'Lập số', 'english.fill_operators': 'Điền dấu', 'english.distribution': 'Chia đều', 'english.pictograph': 'Biểu đồ tranh'
-}
-export const ENGLISH_TOPIC_BADGE: Record<EnglishTopic, string> = {
-    // ...
-    fibonacci: '🐚 Fibonacci',
-    alternating_seq: '⏩ Dãy xen kẽ',
-    balance_chain: '⚖️ Cân chuỗi',
-    magic_square: '🔮 Ma trận',
-    coin_combination: '🪙 Tổ hợp xu',
-}
-
-export const SUB_SKILL_LABELS: Record<SubSkillId, string> = {
-    // ...
+    'english.permutation': 'Lập số', 'english.fill_operators': 'Điền dấu', 'english.distribution': 'Chia đều', 'english.pictograph': 'Biểu đồ tranh',
     'english.fibonacci': 'Dãy Fibonacci',
     'english.alternating_seq': 'Dãy số xen kẽ',
     'english.balance_chain': 'Cân chuỗi logic',
     'english.magic_square': 'Ma trận số',
-    'english.coin_combination': 'Tổ hợp tiền xu',
+    'english.coin_combination': 'Tổ hợp tiền xu'
 }
 
 export function getSkillFromSubSkill(subSkill: SubSkillId): SkillId { return subSkill.split('.')[0] as SkillId }
@@ -97,7 +87,7 @@ export function createDefaultSubSkillStats(): SubSkillStats {
     return {
         'math.add': { ...s }, 'math.sub': { ...s }, 'math.mul': { ...s },
         'word.addsub': { ...s }, 'word.muldiv': { ...s }, 'word.multistep': { ...s }, 'word.divideadd': { ...s },
-        'pattern.ab': { ...s }, 'pattern.abc': { ...s }, 'pattern.step': { ...s }, 'pattern.mulstep': { ...s }, 'pattern.increasing': { ...s }, 'pattern.interleave': { ...s }, 'pattern.geometry': { ...s },
+        'pattern.ab': { ...s }, 'pattern.abc': { ...s }, 'pattern.step': { ...s }, 'pattern.mulstep': { ...s }, 'pattern.increasing': { ...s }, 'pattern.interleave': { ...s }, 'pattern.geometry': { ...s }, 'pattern.matrix': { ...s },
         'geometry.identify': { ...s }, 'geometry.edges': { ...s }, 'geometry.count': { ...s }, 'geometry.symmetry': { ...s }, 'geometry.sticks': { ...s },
         'thinking.pattern': { ...s }, 'thinking.logic': { ...s }, 'thinking.space': { ...s }, 'thinking.riddle': { ...s }, 'thinking.mixed': { ...s },
         'english.number': { ...s }, 'english.addsub': { ...s }, 'english.muldiv': { ...s }, 'english.word': { ...s }, 'english.pattern': { ...s }, 'english.geometry': { ...s }, 'english.measure': { ...s }, 'english.logic': { ...s },
